@@ -1,14 +1,15 @@
 package io.quarkiverse.shedlock.providers.jdbc.runtime;
 
-import io.agroal.api.AgroalDataSource;
-import io.quarkus.runtime.StartupEvent;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Objects;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+
+import io.agroal.api.AgroalDataSource;
+import io.quarkus.runtime.StartupEvent;
 
 @ApplicationScoped
 public class JdbcLockProviderInitializer {
@@ -16,7 +17,7 @@ public class JdbcLockProviderInitializer {
     private final JdbcConfig jdbcConfig;
 
     public JdbcLockProviderInitializer(final AgroalDataSource agroalDataSource,
-                                       final JdbcConfig jdbcConfig) {
+            final JdbcConfig jdbcConfig) {
         this.agroalDataSource = Objects.requireNonNull(agroalDataSource);
         this.jdbcConfig = Objects.requireNonNull(jdbcConfig);
     }
@@ -32,7 +33,8 @@ public class JdbcLockProviderInitializer {
                 )
                 """;
         try (final Connection connection = agroalDataSource.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement(String.format(databaseCreationSql, jdbcConfig.tableName()));
+            final PreparedStatement preparedStatement = connection
+                    .prepareStatement(String.format(databaseCreationSql, jdbcConfig.tableName()));
             preparedStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -1,23 +1,24 @@
 package io.quarkiverse.shedlock.providers.mongo.deployment;
 
-import com.mongodb.client.MongoClient;
-import io.quarkus.test.QuarkusUnitTest;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.Duration;
+import java.time.Instant;
+
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
-import net.javacrumbs.shedlock.core.LockConfiguration;
-import net.javacrumbs.shedlock.core.LockProvider;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import java.time.Duration;
-import java.time.Instant;
+import io.quarkus.test.QuarkusUnitTest;
+import net.javacrumbs.shedlock.core.LockConfiguration;
+import net.javacrumbs.shedlock.core.LockProvider;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class SpecifiedDatabaseTest {
+public class SpecifiedDatabaseTest extends TestBase {
 
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
@@ -27,9 +28,6 @@ public class SpecifiedDatabaseTest {
 
     @Inject
     Instance<LockProvider> lockProvider;
-
-    @Inject
-    MongoClient mongoClient;
 
     @Test
     public void shouldUseSpecifiedDatabaseName() {
