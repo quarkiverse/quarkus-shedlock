@@ -14,6 +14,6 @@
   <modules>
     <module>inmemory</module>
     <module>jdbc</module>
-<!--    <module>mongo</module>-->
+    <module>mongo</module>
   </modules>
 </project>

@@ -1,18 +1,7 @@
 package io.quarkiverse.shedlock.providers.jdbc.deployment;
 
-import io.quarkus.arc.ClientProxy;
-import io.quarkus.builder.Version;
-import io.quarkus.maven.dependency.Dependency;
-import io.quarkus.test.QuarkusUnitTest;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
-import net.javacrumbs.shedlock.core.LockConfiguration;
-import net.javacrumbs.shedlock.core.LockProvider;
-import net.javacrumbs.shedlock.provider.jdbc.JdbcLockProvider;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,8 +12,21 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
+import io.quarkus.arc.ClientProxy;
+import io.quarkus.builder.Version;
+import io.quarkus.maven.dependency.Dependency;
+import io.quarkus.test.QuarkusUnitTest;
+import net.javacrumbs.shedlock.core.LockConfiguration;
+import net.javacrumbs.shedlock.core.LockProvider;
+import net.javacrumbs.shedlock.provider.jdbc.JdbcLockProvider;
 
 public class JdbcShedlockTest extends TestBase {
 
@@ -41,15 +43,16 @@ public class JdbcShedlockTest extends TestBase {
     public void shouldProduceExpectedLockProvider() {
         assertAll(
                 () -> assertThat(lockProvider.isResolvable()).isTrue(),
-                () -> assertThat(((ClientProxy) lockProvider.get()).arc_contextualInstance()).isInstanceOf(JdbcLockProvider.class));
+                () -> assertThat(((ClientProxy) lockProvider.get()).arc_contextualInstance())
+                        .isInstanceOf(JdbcLockProvider.class));
     }
 
     @Test
     public void shouldUseDefaultTableName() {
         final List<String> tablesName = new ArrayList<>();
         try (final Connection connection = agroalDataSource.getConnection();
-             final PreparedStatement selectTablesNameStatement = connection.prepareStatement(
-                     "SELECT table_name FROM information_schema.tables")) {
+                final PreparedStatement selectTablesNameStatement = connection.prepareStatement(
+                        "SELECT table_name FROM information_schema.tables")) {
             final ResultSet tablesNameResultSet = selectTablesNameStatement.executeQuery();
             while (tablesNameResultSet.next()) {
                 tablesName.add(tablesNameResultSet.getString("table_name"));
@@ -68,8 +71,8 @@ public class JdbcShedlockTest extends TestBase {
 
         final Integer count;
         try (final Connection connection = agroalDataSource.getConnection();
-             final PreparedStatement countLocksStatement = connection.prepareStatement(
-                     "SELECT COUNT(*) AS count FROM shedlock WHERE name = 'shouldCreateALock'")) {
+                final PreparedStatement countLocksStatement = connection.prepareStatement(
+                        "SELECT COUNT(*) AS count FROM shedlock WHERE name = 'shouldCreateALock'")) {
             final ResultSet countLocksResultSet = countLocksStatement.executeQuery();
             countLocksResultSet.next();
             count = countLocksResultSet.getInt("count");

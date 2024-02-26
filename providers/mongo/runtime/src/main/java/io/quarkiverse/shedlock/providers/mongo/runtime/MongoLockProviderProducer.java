@@ -1,14 +1,17 @@
 package io.quarkiverse.shedlock.providers.mongo.runtime;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import java.util.Optional;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
-import net.javacrumbs.shedlock.core.LockProvider;
-import net.javacrumbs.shedlock.provider.mongo.MongoLockProvider;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import java.util.Optional;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
+
+import net.javacrumbs.shedlock.core.LockProvider;
+import net.javacrumbs.shedlock.provider.mongo.MongoLockProvider;
 
 public class MongoLockProviderProducer {
     @ApplicationScoped
