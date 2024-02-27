@@ -1,0 +1,4 @@
+name: "Shedlock Common"
+description: "Distributed lock for your scheduled tasks"
+metadata:
+  unlisted: true
