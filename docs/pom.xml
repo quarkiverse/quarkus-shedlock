@@ -20,6 +20,21 @@
             <artifactId>quarkus-shedlock-deployment</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.shedlock</groupId>
+            <artifactId>quarkus-shedlock-provider-inmemory-deployment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.shedlock</groupId>
+            <artifactId>quarkus-shedlock-provider-jdbc-deployment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.shedlock</groupId>
+            <artifactId>quarkus-shedlock-provider-mongo-deployment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
