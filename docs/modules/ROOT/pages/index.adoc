@@ -2,7 +2,7 @@
 
 include::./includes/attributes.adoc[]
 
-TIP: Describe what the extension does here.
+TIP: Distributed lock for your scheduled tasks.
 
 == Installation
 
