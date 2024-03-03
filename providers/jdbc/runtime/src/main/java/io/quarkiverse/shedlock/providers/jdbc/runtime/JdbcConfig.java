@@ -3,23 +3,22 @@ package io.quarkiverse.shedlock.providers.jdbc.runtime;
 import java.util.Map;
 
 import io.quarkiverse.shedlock.common.runtime.SchedulerLockInterceptorBase;
+import io.quarkus.datasource.common.runtime.DataSourceUtil;
 import io.quarkus.runtime.annotations.*;
-import io.smallrye.config.ConfigMapping;
-import io.smallrye.config.WithDefault;
-import io.smallrye.config.WithUnnamedKey;
+import io.smallrye.config.*;
 
 @ConfigMapping(prefix = "quarkus.shedlock.jdbc")
-@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+@ConfigRoot(phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
 public interface JdbcConfig {
-    String DEFAULT = "<default>";
-
     /**
      * data sources configuration
      */
     @ConfigDocSection
-    @WithUnnamedKey(DEFAULT)
-    @ConfigDocMapKey("datasource")
-    Map<String, DataSourceConfig> datasources();
+    @ConfigDocMapKey("datasource-name")
+    @WithParentName
+    @WithDefaults
+    @WithUnnamedKey(DataSourceUtil.DEFAULT_DATASOURCE_NAME)
+    Map<String, DataSourceConfig> dataSources();
 
     @ConfigGroup
     interface DataSourceConfig {

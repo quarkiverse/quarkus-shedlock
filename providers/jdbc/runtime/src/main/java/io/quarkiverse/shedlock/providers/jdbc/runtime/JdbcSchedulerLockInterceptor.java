@@ -17,6 +17,7 @@ import io.quarkiverse.shedlock.common.runtime.SchedulerLockInterceptorBase;
 import io.quarkiverse.shedlock.common.runtime.ShedLockConfiguration;
 import io.quarkus.agroal.DataSource;
 import io.quarkus.arc.Arc;
+import io.quarkus.datasource.common.runtime.DataSourceUtil;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbc.JdbcLockProvider;
 
@@ -43,10 +44,11 @@ public class JdbcSchedulerLockInterceptor extends SchedulerLockInterceptorBase {
     protected LockProvider lockProvider(final Method method) {
         final String dataSourceName = method.getAnnotation(JdbcSchedulerLock.class).dataSourceName();
         final AgroalDataSource agroalDataSource = Arc.container()
-                .select(AgroalDataSource.class, JdbcConfig.DEFAULT.equals(dataSourceName) ? new Default.Literal()
-                        : new DataSource.DataSourceLiteral(dataSourceName))
+                .select(AgroalDataSource.class,
+                        DataSourceUtil.DEFAULT_DATASOURCE_NAME.equals(dataSourceName) ? new Default.Literal()
+                                : new DataSource.DataSourceLiteral(dataSourceName))
                 .get();
-        final String tableName = Optional.ofNullable(jdbcConfig.datasources().get(dataSourceName))
+        final String tableName = Optional.ofNullable(jdbcConfig.dataSources().get(dataSourceName))
                 .map(JdbcConfig.DataSourceConfig::tableName)
                 .orElse(SchedulerLockInterceptorBase.SHED_LOCK);
         return new JdbcLockProvider(agroalDataSource, tableName);

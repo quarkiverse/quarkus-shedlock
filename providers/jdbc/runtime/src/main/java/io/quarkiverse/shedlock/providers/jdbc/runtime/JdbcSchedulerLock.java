@@ -6,6 +6,7 @@ import jakarta.enterprise.util.Nonbinding;
 import jakarta.interceptor.InterceptorBinding;
 
 import io.quarkiverse.shedlock.common.runtime.LockDuration;
+import io.quarkus.datasource.common.runtime.DataSourceUtil;
 
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)
@@ -13,7 +14,7 @@ import io.quarkiverse.shedlock.common.runtime.LockDuration;
 @Inherited
 public @interface JdbcSchedulerLock {
     @Nonbinding
-    String dataSourceName() default JdbcConfig.DEFAULT;
+    String dataSourceName() default DataSourceUtil.DEFAULT_DATASOURCE_NAME;
 
     @Nonbinding
     LockDuration lockDuration() default @LockDuration();
