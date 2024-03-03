@@ -10,9 +10,9 @@ h|[[quarkus-shedlock-mongo_quarkus-shedlock-mongo-mongoclients-mongo-client-conf
 h|Type
 h|Default
 
-a| [[quarkus-shedlock-mongo_quarkus-shedlock-mongo-mongoclients-database-name]]`link:#quarkus-shedlock-mongo_quarkus-shedlock-mongo-mongoclients-database-name[quarkus.shedlock.mongo.mongoclients.database-name]`
+a| [[quarkus-shedlock-mongo_quarkus-shedlock-mongo-database-name]]`link:#quarkus-shedlock-mongo_quarkus-shedlock-mongo-database-name[quarkus.shedlock.mongo.database-name]`
 
-`link:#quarkus-shedlock-mongo_quarkus-shedlock-mongo-mongoclients-database-name[quarkus.shedlock.mongo.mongoclients."mongoclient".database-name]`
+`link:#quarkus-shedlock-mongo_quarkus-shedlock-mongo-database-name[quarkus.shedlock.mongo."mongoclient-name".database-name]`
 
 
 [.description]
@@ -20,10 +20,10 @@ a| [[quarkus-shedlock-mongo_quarkus-shedlock-mongo-mongoclients-database-name]]`
 database name for mongo client (default to shedLock)
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++QUARKUS_SHEDLOCK_MONGO_MONGOCLIENTS_DATABASE_NAME+++[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_SHEDLOCK_MONGO_DATABASE_NAME+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++QUARKUS_SHEDLOCK_MONGO_MONGOCLIENTS_DATABASE_NAME+++`
+Environment variable: `+++QUARKUS_SHEDLOCK_MONGO_DATABASE_NAME+++`
 endif::add-copy-button-to-env-var[]
 --|string 
 |`shedLock`
