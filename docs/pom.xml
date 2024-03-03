@@ -83,6 +83,9 @@
                                 <resource>
                                     <directory>${project.basedir}/../target/asciidoc/generated/config/</directory>
                                     <include>quarkus-shedlock.adoc</include>
+                                    <include>quarkus-shedlock-inmemory.adoc</include>
+                                    <include>quarkus-shedlock-jdbc.adoc</include>
+                                    <include>quarkus-shedlock-mongo.adoc</include>
                                     <filtering>false</filtering>
                                 </resource>
                                 <resource>

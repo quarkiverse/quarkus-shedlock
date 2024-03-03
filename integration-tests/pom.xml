@@ -15,5 +15,6 @@
     <module>inmemory</module>
     <module>jdbc</module>
     <module>mongo</module>
+    <module>mixed</module>
   </modules>
 </project>

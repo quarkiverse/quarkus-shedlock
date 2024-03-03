@@ -1,1 +1,5 @@
 * xref:index.adoc[Getting started]
+
+
+TODO faire chaque page ou autres ... voir le service amazon
+mais je pense que je ne devrais pas l'utiliser ...

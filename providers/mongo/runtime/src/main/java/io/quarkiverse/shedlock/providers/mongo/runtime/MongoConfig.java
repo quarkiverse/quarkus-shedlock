@@ -1,4 +1,4 @@
-package io.quarkiverse.shedlock.providers.jdbc.runtime;
+package io.quarkiverse.shedlock.providers.mongo.runtime;
 
 import java.util.Map;
 
@@ -8,25 +8,25 @@ import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithUnnamedKey;
 
-@ConfigMapping(prefix = "quarkus.shedlock.jdbc")
+@ConfigMapping(prefix = "quarkus.shedlock.mongo")
 @ConfigRoot(phase = ConfigPhase.RUN_TIME)
-public interface JdbcConfig {
+public interface MongoConfig {
     String DEFAULT = "<default>";
 
     /**
-     * data sources configuration
+     * Mongo client configuration
      */
     @ConfigDocSection
     @WithUnnamedKey(DEFAULT)
-    @ConfigDocMapKey("datasource")
-    Map<String, DataSourceConfig> datasources();
+    @ConfigDocMapKey("mongoclient")
+    Map<String, MongoClientConfig> mongoclients();
 
     @ConfigGroup
-    interface DataSourceConfig {
+    interface MongoClientConfig {
         /**
-         * table name for datasource (default to shedLock)
+         * database name for mongo client (default to shedLock)
          */
         @WithDefault(SchedulerLockInterceptorBase.SHED_LOCK)
-        String tableName();
+        String databaseName();
     }
 }

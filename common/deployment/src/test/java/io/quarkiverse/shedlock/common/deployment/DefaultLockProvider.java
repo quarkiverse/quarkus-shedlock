@@ -10,15 +10,15 @@ import net.javacrumbs.shedlock.core.SimpleLock;
 
 @ApplicationScoped
 public class DefaultLockProvider implements LockProvider {
-    private boolean called = false;
+    private boolean hasBeenCalled = false;
 
     @Override
     public Optional<SimpleLock> lock(final LockConfiguration lockConfiguration) {
-        this.called = true;
+        hasBeenCalled = true;
         return Optional.empty();
     }
 
-    public boolean isCalled() {
-        return called;
+    public boolean hasBeenCalled() {
+        return hasBeenCalled;
     }
 }
