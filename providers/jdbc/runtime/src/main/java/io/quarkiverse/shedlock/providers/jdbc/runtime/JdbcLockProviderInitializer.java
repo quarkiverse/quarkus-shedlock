@@ -12,6 +12,7 @@ import jakarta.enterprise.inject.Default;
 import io.agroal.api.AgroalDataSource;
 import io.quarkus.agroal.DataSource;
 import io.quarkus.arc.Arc;
+import io.quarkus.datasource.common.runtime.DataSourceUtil;
 import io.quarkus.runtime.StartupEvent;
 
 @ApplicationScoped
@@ -23,10 +24,11 @@ public class JdbcLockProviderInitializer {
     }
 
     void createTable(@Observes StartupEvent startupEvent) {
-        jdbcConfig.datasources().forEach((dataSourceName, dataSourceConfig) -> {
+        jdbcConfig.dataSources().forEach((dataSourceName, dataSourceConfig) -> {
             final AgroalDataSource agroalDataSource = Arc.container()
-                    .select(AgroalDataSource.class, JdbcConfig.DEFAULT.equals(dataSourceName) ? new Default.Literal()
-                            : new DataSource.DataSourceLiteral(dataSourceName))
+                    .select(AgroalDataSource.class,
+                            DataSourceUtil.DEFAULT_DATASOURCE_NAME.equals(dataSourceName) ? new Default.Literal()
+                                    : new DataSource.DataSourceLiteral(dataSourceName))
                     .get();
             final String databaseCreationSql = """
                     CREATE TABLE IF NOT EXISTS %s (

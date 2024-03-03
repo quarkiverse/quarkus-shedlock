@@ -5,14 +5,14 @@ icon:lock[title=Fixed at build time] Configuration property fixed at build time 
 [.configuration-reference.searchable, cols="80,.^10,.^10"]
 |===
 
-h|[[quarkus-shedlock-jdbc_quarkus-shedlock-jdbc-datasources-data-sources-configuration]]link:#quarkus-shedlock-jdbc_quarkus-shedlock-jdbc-datasources-data-sources-configuration[data sources configuration]
+h|[[quarkus-shedlock-jdbc_quarkus-shedlock-jdbc-data-sources-data-sources-configuration]]link:#quarkus-shedlock-jdbc_quarkus-shedlock-jdbc-data-sources-data-sources-configuration[data sources configuration]
 
 h|Type
 h|Default
 
-a| [[quarkus-shedlock-jdbc_quarkus-shedlock-jdbc-datasources-table-name]]`link:#quarkus-shedlock-jdbc_quarkus-shedlock-jdbc-datasources-table-name[quarkus.shedlock.jdbc.datasources.table-name]`
+a|icon:lock[title=Fixed at build time] [[quarkus-shedlock-jdbc_quarkus-shedlock-jdbc-table-name]]`link:#quarkus-shedlock-jdbc_quarkus-shedlock-jdbc-table-name[quarkus.shedlock.jdbc.table-name]`
 
-`link:#quarkus-shedlock-jdbc_quarkus-shedlock-jdbc-datasources-table-name[quarkus.shedlock.jdbc.datasources."datasource".table-name]`
+`link:#quarkus-shedlock-jdbc_quarkus-shedlock-jdbc-table-name[quarkus.shedlock.jdbc."datasource-name".table-name]`
 
 
 [.description]
@@ -20,10 +20,10 @@ a| [[quarkus-shedlock-jdbc_quarkus-shedlock-jdbc-datasources-table-name]]`link:#
 table name for datasource (default to shedLock)
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++QUARKUS_SHEDLOCK_JDBC_DATASOURCES_TABLE_NAME+++[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_SHEDLOCK_JDBC_TABLE_NAME+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++QUARKUS_SHEDLOCK_JDBC_DATASOURCES_TABLE_NAME+++`
+Environment variable: `+++QUARKUS_SHEDLOCK_JDBC_TABLE_NAME+++`
 endif::add-copy-button-to-env-var[]
 --|string 
 |`shedLock`
