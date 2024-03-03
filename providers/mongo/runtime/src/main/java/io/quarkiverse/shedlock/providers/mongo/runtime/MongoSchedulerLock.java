@@ -6,6 +6,7 @@ import jakarta.enterprise.util.Nonbinding;
 import jakarta.interceptor.InterceptorBinding;
 
 import io.quarkiverse.shedlock.common.runtime.LockDuration;
+import io.quarkus.mongodb.runtime.MongoClientBeanUtil;
 
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)
@@ -13,7 +14,7 @@ import io.quarkiverse.shedlock.common.runtime.LockDuration;
 @Inherited
 public @interface MongoSchedulerLock {
     @Nonbinding
-    String mongoClientName() default MongoConfig.DEFAULT;
+    String mongoClientName() default MongoClientBeanUtil.DEFAULT_MONGOCLIENT_NAME;
 
     @Nonbinding
     LockDuration lockDuration() default @LockDuration();

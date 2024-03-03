@@ -3,22 +3,21 @@ package io.quarkiverse.shedlock.providers.mongo.runtime;
 import java.util.Map;
 
 import io.quarkiverse.shedlock.common.runtime.SchedulerLockInterceptorBase;
+import io.quarkus.mongodb.runtime.MongoClientBeanUtil;
 import io.quarkus.runtime.annotations.*;
-import io.smallrye.config.ConfigMapping;
-import io.smallrye.config.WithDefault;
-import io.smallrye.config.WithUnnamedKey;
+import io.smallrye.config.*;
 
 @ConfigMapping(prefix = "quarkus.shedlock.mongo")
 @ConfigRoot(phase = ConfigPhase.RUN_TIME)
 public interface MongoConfig {
-    String DEFAULT = "<default>";
-
     /**
      * Mongo client configuration
      */
     @ConfigDocSection
-    @WithUnnamedKey(DEFAULT)
-    @ConfigDocMapKey("mongoclient")
+    @ConfigDocMapKey("mongoclient-name")
+    @WithParentName
+    @WithDefaults
+    @WithUnnamedKey(MongoClientBeanUtil.DEFAULT_MONGOCLIENT_NAME)
     Map<String, MongoClientConfig> mongoclients();
 
     @ConfigGroup

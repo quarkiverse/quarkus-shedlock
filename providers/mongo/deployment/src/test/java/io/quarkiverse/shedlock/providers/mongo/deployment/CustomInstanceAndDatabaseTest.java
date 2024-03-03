@@ -26,7 +26,7 @@ public class CustomInstanceAndDatabaseTest {
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(CustomLockableService.class)
                     .addAsResource(new StringAsset("quarkus.shedlock.defaults-lock-at-most-for=PT30S\n" +
-                            "quarkus.shedlock.mongo.mongoclients.cluster1.database-name=customDatabase"),
+                            "quarkus.shedlock.mongo.cluster1.database-name=customDatabase"),
                             "application.properties"))
             .setForcedDependencies(List.of(
                     Dependency.of("io.quarkus", "quarkus-mongodb-client", Version.getVersion())));
