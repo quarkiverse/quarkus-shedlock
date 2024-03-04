@@ -1,18 +1,22 @@
 package io.quarkiverse.shedlock.providers.jdbc.deployment;
 
 import java.util.List;
+import java.util.stream.Stream;
+
+import jakarta.inject.Singleton;
 
 import org.jboss.jandex.DotName;
 
-import io.quarkiverse.shedlock.providers.jdbc.runtime.JdbcConfig;
-import io.quarkiverse.shedlock.providers.jdbc.runtime.JdbcLockProviderInitializer;
-import io.quarkiverse.shedlock.providers.jdbc.runtime.JdbcSchedulerLock;
-import io.quarkiverse.shedlock.providers.jdbc.runtime.JdbcSchedulerLockInterceptor;
+import io.quarkiverse.shedlock.providers.jdbc.runtime.*;
 import io.quarkus.agroal.spi.JdbcDataSourceBuildItem;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.arc.deployment.ValidationPhaseBuildItem.ValidationErrorBuildItem;
+import io.quarkus.datasource.common.runtime.DataSourceUtil;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.annotations.ExecutionTime;
+import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.ApplicationIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 
@@ -37,26 +41,50 @@ public class JdbcSchedulerLockProcessor {
     @BuildStep
     List<ValidationErrorBuildItem> validateDataSourcesDefinitionsWhenJdbcShedLockIsUsed(
             final ApplicationIndexBuildItem applicationIndexBuildItem,
-            final JdbcConfig jdbcConfig,
             final List<JdbcDataSourceBuildItem> jdbcDataSourceBuildItems) {
+        final List<String> dataSourceNames = getDataSourcesNameFromJdbcSchedulerLocks(applicationIndexBuildItem);
+        return dataSourceNames
+                .stream()
+                .filter(shedLockDataSourceName -> jdbcDataSourceBuildItems.stream().map(JdbcDataSourceBuildItem::getName)
+                        .noneMatch(jdbcDataSourceName -> jdbcDataSourceName.equals(shedLockDataSourceName)))
+                .map(missingDataSource -> new ValidationErrorBuildItem(
+                        new IllegalStateException(String.format(
+                                "A missing datasource '%s' has been defined for ShedLock. Please fixe the ShedLock configuration or add the datasource",
+                                missingDataSource))))
+                .toList();
+    }
+
+    @BuildStep
+    @Record(ExecutionTime.STATIC_INIT)
+    List<SyntheticBeanBuildItem> registerJdbcLockProviderInitializer(
+            final ApplicationIndexBuildItem applicationIndexBuildItem,
+            final DataSourceNameRecorder dataSourceNameRecorder) {
+        final List<String> dataSourceNames = getDataSourcesNameFromJdbcSchedulerLocks(applicationIndexBuildItem);
+        List<SyntheticBeanBuildItem> list = dataSourceNames.stream()
+                .map(dataSourceName -> SyntheticBeanBuildItem.configure(DataSourceName.class)
+                        .scope(Singleton.class)
+                        .identifier(dataSourceName)
+                        .supplier(dataSourceNameRecorder.dataSourceNameSupplier(dataSourceName))
+                        .unremovable()
+                        .done())
+                .toList();
+        return list;
+    }
+
+    private List<String> getDataSourcesNameFromJdbcSchedulerLocks(ApplicationIndexBuildItem applicationIndexBuildItem) {
         final DotName jdbcSchedulerLock = DotName.createSimple(JdbcSchedulerLock.class);
-        final boolean shouldCheckDataSourcesBecauseLockIsUsed = applicationIndexBuildItem.getIndex()
-                .getKnownClasses().stream()
-                .anyMatch(classInfo -> classInfo.hasAnnotation(jdbcSchedulerLock) || classInfo.methods().stream()
-                        .anyMatch(methodInfo -> methodInfo.hasAnnotation(jdbcSchedulerLock)));
-        if (shouldCheckDataSourcesBecauseLockIsUsed) {
-            return jdbcConfig.dataSources()
-                    .keySet()
-                    .stream()
-                    .filter(shedLockDataSourceName -> jdbcDataSourceBuildItems.stream().map(JdbcDataSourceBuildItem::getName)
-                            .noneMatch(jdbcDataSourceName -> jdbcDataSourceName.equals(shedLockDataSourceName)))
-                    .map(missingDataSource -> new ValidationErrorBuildItem(
-                            new IllegalStateException(String.format(
-                                    "A missing datasource '%s' has been defined for ShedLock. Please fixe the ShedLock configuration or add the datasource",
-                                    missingDataSource))))
-                    .toList();
-        } else {
-            return List.of();
-        }
+        return Stream.concat(
+                applicationIndexBuildItem.getIndex().getKnownClasses()
+                        .stream().filter(classInfo -> classInfo.hasAnnotation(jdbcSchedulerLock))
+                        .map(classInfo -> classInfo.annotation(jdbcSchedulerLock)),
+                applicationIndexBuildItem.getIndex().getKnownClasses().stream()
+                        .flatMap(classInfo -> classInfo.methods().stream())
+                        .filter(methodInfo -> methodInfo.hasAnnotation(jdbcSchedulerLock))
+                        .map(methodInfo -> methodInfo.annotation(jdbcSchedulerLock)))
+                .map(annotationInstance -> annotationInstance.value("dataSourceName"))
+                .map(dataSourceName -> dataSourceName != null ? dataSourceName.asString()
+                        : DataSourceUtil.DEFAULT_DATASOURCE_NAME)
+                .distinct()
+                .toList();
     }
 }
