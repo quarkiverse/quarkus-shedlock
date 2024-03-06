@@ -8,7 +8,7 @@ import io.quarkus.runtime.annotations.*;
 import io.smallrye.config.*;
 
 @ConfigMapping(prefix = "quarkus.shedlock.jdbc")
-@ConfigRoot(phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
 public interface JdbcConfig {
     /**
      * data sources configuration
