@@ -23,6 +23,12 @@ public interface JdbcConfig {
     @ConfigGroup
     interface DataSourceConfig {
         /**
+         * enable table creation
+         */
+        @WithDefault("true")
+        Boolean enableTableCreation();
+
+        /**
          * table name for datasource (default to shedLock)
          */
         @WithDefault(SchedulerLockInterceptorBase.SHED_LOCK)

@@ -58,6 +58,8 @@ To activate the lock on a method just annotate it with `@JdbcSchedulerLock`.
 include::{examples-dir}/JdbcSchedulerLockService.java[indent=0,tabsize=2]
 ----
 
+=== Multiple data sources
+
 By default, the lock is bound to the `default` datasource.
 
 The lock duration and dataSourceName can be defined on the annotation directly likes this way:
@@ -77,3 +79,52 @@ quarkus.datasource.master.db-kind=postgresql
 ----
 
 if the datasource does not exist the application will refuse to start and a message will be produce to help configuring the application.
+
+=== Table storage
+
+By default, the table is created using `shedLock` naming.
+
+The name can be overridden by specifying another table name using this property `table-name`:
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.jdbc.table-name=myShedlockTable
+----
+
+or for a custom named source:
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.jdbc.customDataSource.table-name=myCustomDataSourceShedlockTable
+----
+
+However, following some enterprise organizations, it is not allowed to create a table due to missing admin right for security purpose.
+
+It is possible to disable the table creation by setting `enable-table-creation` to false like this way:
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.jdbc.enable-table-creation=false
+----
+
+or for a custom named source:
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.jdbc.customDataSource.enable-table-creation=false
+----
+
+The table create script is defined this way:
+
+[source,sql]
+CREATE TABLE IF NOT EXISTS shedlock (
+  name VARCHAR(255),
+  lock_until TIMESTAMP(3) NULL,
+  locked_at TIMESTAMP(3) NULL,
+  locked_by VARCHAR(255),
+  PRIMARY KEY (name)
+)

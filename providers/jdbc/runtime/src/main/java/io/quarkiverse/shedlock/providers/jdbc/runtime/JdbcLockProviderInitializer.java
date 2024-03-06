@@ -31,8 +31,11 @@ public class JdbcLockProviderInitializer {
     }
 
     void createTable(@Observes StartupEvent startupEvent) {
-        dataSourcesName
-                .stream().map(DataSourceName::name)
+        dataSourcesName.stream()
+                .map(DataSourceName::name)
+                .filter(dataSourceName -> Optional.ofNullable(jdbcConfig.dataSources().get(dataSourceName))
+                        .map(JdbcConfig.DataSourceConfig::enableTableCreation)
+                        .orElse(Boolean.TRUE))
                 .forEach(dataSourceName -> {
                     final AgroalDataSource agroalDataSource = Arc.container()
                             .select(AgroalDataSource.class,
