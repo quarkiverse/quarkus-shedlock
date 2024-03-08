@@ -29,6 +29,7 @@ public class CustomTableNameTest {
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(LockableService.class)
                     .addAsResource(new StringAsset("quarkus.shedlock.defaults-lock-at-most-for=PT30S\n" +
+                            "quarkus.datasource.devservices.reuse=false\n" +
                             "quarkus.shedlock.jdbc.table-name=myShedLockTableName"),
                             "application.properties"))
             .setForcedDependencies(List.of(

@@ -21,7 +21,8 @@ public class CommonSchedulerLockTest {
                             DefaultLockProvider.class,
                             DefaultSchedulerLockInterceptor.class,
                             LockableService.class)
-                    .addAsResource(new StringAsset("quarkus.shedlock.defaults-lock-at-most-for=PT30S"),
+                    .addAsResource(new StringAsset("quarkus.shedlock.defaults-lock-at-most-for=PT30S\n" +
+                            "quarkus.datasource.devservices.reuse=false"),
                             "application.properties"));
 
     @Inject
