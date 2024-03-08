@@ -31,6 +31,10 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkiverse.shedlock</groupId>
             <artifactId>quarkus-shedlock-provider-mongo-deployment</artifactId>
             <version>${project.version}</version>
