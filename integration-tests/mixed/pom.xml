@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.quarkiverse.shedlock</groupId>
-        <artifactId>quarkus-shedlock-parent</artifactId>
+        <artifactId>quarkus-shedlock-integration-tests</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
     <artifactId>quarkus-shedlock-providers-mixed-integration-tests</artifactId>
