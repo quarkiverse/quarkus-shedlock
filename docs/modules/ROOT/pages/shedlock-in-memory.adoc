@@ -1,0 +1,54 @@
+= Shedlock In Memory Provider
+
+include::./includes/attributes.adoc[]
+
+Shedlock In Memory provider give the ability to apply `local` locks. Under the hood an `HashMap` is used to store the locks.
+
+[[installation]]
+== Installation
+
+If you want to use this extension, you need to add the `io.quarkiverse.shedlock:quarkus-shedlock-provider-inmemory` extension first to your build file.
+
+For instance, with Maven, add the following dependency to your POM file:
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+    <groupId>io.quarkiverse.shedlock</groupId>
+    <artifactId>quarkus-shedlock-provider-inmemory</artifactId>
+    <version>{project-version}</version>
+</dependency>
+----
+
+[[configuring]]
+== Configuring
+
+The `quarkus.shedlock.defaults-lock-at-most-for` application property is mandatory.
+
+[[extension-configuration-reference]]
+== Extension Configuration Reference
+
+include::includes/quarkus-shedlock.adoc[opts=optional, leveloffset=+1]
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.defaults-lock-at-most-for=PT30S
+----
+
+[[how-to-use-it]]
+== How to use it
+
+To activate the lock on a method just annotate it with `@InMemorySchedulerLock`.
+
+[source,java]
+----
+include::{examples-dir}/InMemorySchedulerLockService.java[indent=0,tabsize=2]
+----
+
+The lock duration can be defined on the annotation directly likes this way:
+
+[source,java]
+----
+include::{examples-dir}/InMemorySchedulerLockServiceOptions.java[indent=0,tabsize=2]
+----

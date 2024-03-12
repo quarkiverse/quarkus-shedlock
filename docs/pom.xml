@@ -17,7 +17,21 @@
         <!-- Make sure the doc is built after the other artifacts -->
         <dependency>
             <groupId>io.quarkiverse.shedlock</groupId>
-            <artifactId>quarkus-shedlock-deployment</artifactId>
+            <artifactId>quarkus-shedlock-provider-inmemory-deployment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.shedlock</groupId>
+            <artifactId>quarkus-shedlock-provider-jdbc-deployment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.shedlock</groupId>
+            <artifactId>quarkus-shedlock-provider-mongo-deployment</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -68,6 +82,9 @@
                                 <resource>
                                     <directory>${project.basedir}/../target/asciidoc/generated/config/</directory>
                                     <include>quarkus-shedlock.adoc</include>
+                                    <include>quarkus-shedlock-inmemory.adoc</include>
+                                    <include>quarkus-shedlock-jdbc.adoc</include>
+                                    <include>quarkus-shedlock-mongo.adoc</include>
                                     <filtering>false</filtering>
                                 </resource>
                                 <resource>
