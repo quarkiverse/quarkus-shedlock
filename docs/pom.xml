@@ -17,11 +17,6 @@
         <!-- Make sure the doc is built after the other artifacts -->
         <dependency>
             <groupId>io.quarkiverse.shedlock</groupId>
-            <artifactId>quarkus-shedlock-deployment</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkiverse.shedlock</groupId>
             <artifactId>quarkus-shedlock-provider-inmemory-deployment</artifactId>
             <version>${project.version}</version>
         </dependency>
