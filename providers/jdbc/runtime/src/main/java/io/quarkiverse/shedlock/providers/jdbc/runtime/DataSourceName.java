@@ -1,5 +1,9 @@
 package io.quarkiverse.shedlock.providers.jdbc.runtime;
 
-public interface DataSourceName {
-    String name();
+import java.util.Objects;
+
+public record DataSourceName(String name) {
+    public DataSourceName {
+        Objects.requireNonNull(name);
+    }
 }

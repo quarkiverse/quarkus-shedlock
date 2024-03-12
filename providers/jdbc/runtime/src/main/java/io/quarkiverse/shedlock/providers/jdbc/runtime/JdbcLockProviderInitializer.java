@@ -3,14 +3,12 @@ package io.quarkiverse.shedlock.providers.jdbc.runtime;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
-import jakarta.enterprise.inject.Instance;
 
 import io.agroal.api.AgroalDataSource;
 import io.quarkiverse.shedlock.common.runtime.SchedulerLockInterceptorBase;
@@ -22,16 +20,16 @@ import io.quarkus.runtime.StartupEvent;
 @ApplicationScoped
 public class JdbcLockProviderInitializer {
     private final JdbcConfig jdbcConfig;
-    private final List<DataSourceName> dataSourcesName;
+    private final DataSources dataSources;
 
     public JdbcLockProviderInitializer(final JdbcConfig jdbcConfig,
-            final Instance<DataSourceName> dataSourcesName) {
+            final DataSources dataSources) {
         this.jdbcConfig = Objects.requireNonNull(jdbcConfig);
-        this.dataSourcesName = Objects.requireNonNull(dataSourcesName).stream().toList();
+        this.dataSources = Objects.requireNonNull(dataSources);
     }
 
     void createTable(@Observes StartupEvent startupEvent) {
-        dataSourcesName.stream()
+        dataSources.dataSourcesName().stream()
                 .map(DataSourceName::name)
                 .filter(dataSourceName -> Optional.ofNullable(jdbcConfig.dataSources().get(dataSourceName))
                         .map(JdbcConfig.DataSourceConfig::enableTableCreation)
