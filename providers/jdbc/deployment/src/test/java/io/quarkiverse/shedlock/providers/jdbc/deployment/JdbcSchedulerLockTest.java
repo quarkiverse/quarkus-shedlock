@@ -23,13 +23,15 @@ import io.quarkus.builder.Version;
 import io.quarkus.maven.dependency.Dependency;
 import io.quarkus.test.QuarkusUnitTest;
 
-public class JdbcSchedulerLockTest {
+class JdbcSchedulerLockTest {
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addClasses(LockableService.class)
-                    .addAsResource(new StringAsset("quarkus.shedlock.defaults-lock-at-most-for=PT30S\n" +
-                            "quarkus.datasource.devservices.reuse=false"),
+                    .addClasses(LockableResource.class)
+                    // language=properties
+                    .addAsResource(new StringAsset("""
+                            quarkus.shedlock.defaults-lock-at-most-for=PT30S
+                            quarkus.datasource.devservices.reuse=false"""),
                             "application.properties"))
             .setForcedDependencies(List.of(
                     Dependency.of("io.quarkus", "quarkus-jdbc-postgresql", Version.getVersion())));
@@ -38,10 +40,19 @@ public class JdbcSchedulerLockTest {
     AgroalDataSource agroalDataSource;
 
     @Inject
-    LockableService lockableService;
+    LockableResource lockableResource;
 
     @Test
-    public void shouldUseDefaultTableName() {
+    void shouldLock() {
+        for (int called = 0; called < 5; called++) {
+            lockableResource.doSomething();
+        }
+
+        assertThat(lockableResource.getCallCount()).isEqualTo(1);
+    }
+
+    @Test
+    void shouldUseDefaultTableName() {
         final List<String> tablesName = new ArrayList<>();
         try (final Connection connection = agroalDataSource.getConnection();
                 final PreparedStatement selectTablesNameStatement = connection.prepareStatement(
@@ -58,13 +69,13 @@ public class JdbcSchedulerLockTest {
     }
 
     @Test
-    public void shouldCreateALock() {
-        lockableService.execute();
+    void shouldCreateALock() {
+        lockableResource.doSomething();
 
         final Integer count;
         try (final Connection connection = agroalDataSource.getConnection();
                 final PreparedStatement countLocksStatement = connection.prepareStatement(
-                        "SELECT COUNT(*) AS count FROM shedlock WHERE name = 'io.quarkiverse.shedlock.providers.jdbc.deployment.LockableService_execute'")) {
+                        "SELECT COUNT(*) AS count FROM shedlock WHERE name = 'io.quarkiverse.shedlock.providers.jdbc.deployment.LockableResource_doSomething'")) {
             final ResultSet countLocksResultSet = countLocksStatement.executeQuery();
             countLocksResultSet.next();
             count = countLocksResultSet.getInt("count");
@@ -76,7 +87,8 @@ public class JdbcSchedulerLockTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
+        lockableResource.reset();
         try (final Connection connection = agroalDataSource.getConnection();
                 final PreparedStatement truncateStatement = connection.prepareStatement(
                         "TRUNCATE TABLE shedlock")) {

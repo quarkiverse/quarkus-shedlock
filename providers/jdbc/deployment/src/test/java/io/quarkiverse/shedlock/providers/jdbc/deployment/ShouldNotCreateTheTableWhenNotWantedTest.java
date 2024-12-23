@@ -22,14 +22,17 @@ import io.quarkus.builder.Version;
 import io.quarkus.maven.dependency.Dependency;
 import io.quarkus.test.QuarkusUnitTest;
 
-public class ShouldNotCreateTheTableWhenNotWantedTest {
+class ShouldNotCreateTheTableWhenNotWantedTest {
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addClasses(LockableService.class)
-                    .addAsResource(new StringAsset("quarkus.shedlock.defaults-lock-at-most-for=PT30S\n" +
-                            "quarkus.shedlock.jdbc.enable-table-creation=false\n" +
-                            "quarkus.shedlock.jdbc.table-name=shouldNotExists"),
+                    .addClasses(LockableResource.class)
+                    // language=properties
+                    .addAsResource(new StringAsset("""
+                            quarkus.shedlock.defaults-lock-at-most-for=PT30S
+                            quarkus.datasource.devservices.reuse=false
+                            quarkus.shedlock.jdbc.enable-table-creation=false
+                            quarkus.shedlock.jdbc.table-name=shouldNotExists"""),
                             "application.properties"))
             .setForcedDependencies(List.of(
                     Dependency.of("io.quarkus", "quarkus-jdbc-postgresql", Version.getVersion())));
@@ -38,7 +41,7 @@ public class ShouldNotCreateTheTableWhenNotWantedTest {
     AgroalDataSource defaultAgroalDataSource;
 
     @Test
-    public void shouldUseSpecifiedTableName() {
+    void shouldUseSpecifiedTableName() {
         final List<String> tablesName = new ArrayList<>();
         try (final Connection connection = defaultAgroalDataSource.getConnection();
                 final PreparedStatement selectTablesNameStatement = connection.prepareStatement(

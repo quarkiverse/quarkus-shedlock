@@ -6,6 +6,7 @@
         <groupId>io.quarkiverse.shedlock</groupId>
         <artifactId>quarkus-shedlock-provider-inmemory-parent</artifactId>
         <version>999-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>quarkus-shedlock-provider-inmemory</artifactId>
     <name>Quarkus Shedlock - Provider In Memory Runtime</name>

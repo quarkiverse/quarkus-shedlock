@@ -26,12 +26,13 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-jdbc-h2</artifactId>
+            <groupId>io.quarkiverse.shedlock</groupId>
+            <artifactId>quarkus-shedlock-provider-mongo-deployment</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkiverse.shedlock</groupId>
-            <artifactId>quarkus-shedlock-provider-mongo-deployment</artifactId>
+            <artifactId>quarkus-shedlock-provider-mongo-reactive-deployment</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -57,6 +58,14 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-config-doc-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <targetDirectory>${project.basedir}/modules/ROOT/pages/includes/</targetDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
@@ -74,6 +83,7 @@
                                     <include>quarkus-shedlock-inmemory.adoc</include>
                                     <include>quarkus-shedlock-jdbc.adoc</include>
                                     <include>quarkus-shedlock-mongo.adoc</include>
+                                    <include>quarkus-shedlock-mongo-reactive.adoc</include>
                                     <filtering>false</filtering>
                                 </resource>
                                 <resource>

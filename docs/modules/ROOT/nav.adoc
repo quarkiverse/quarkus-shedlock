@@ -2,3 +2,4 @@
 * xref:shedlock-in-memory.adoc[Shedlock in memory provider]
 * xref:shedlock-jdbc.adoc[Shedlock JDBC provider]
 * xref:shedlock-mongo.adoc[Shedlock mongo provider]
+* xref:shedlock-mongo-reactive.adoc[Shedlock mongo reactive provider]

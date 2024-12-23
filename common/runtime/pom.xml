@@ -6,6 +6,7 @@
         <groupId>io.quarkiverse.shedlock</groupId>
         <artifactId>quarkus-shedlock-common-parent</artifactId>
         <version>999-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>quarkus-shedlock-common</artifactId>
     <name>Quarkus ShedLock - Common - Runtime</name>

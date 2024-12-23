@@ -12,14 +12,14 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class CommonSchedulerLockTest {
+class CommonSchedulerLockTest {
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(
-                            DefaultSchedulerLock.class,
-                            DefaultLockProvider.class,
-                            DefaultSchedulerLockInterceptor.class,
+                            TestSchedulerLock.class,
+                            StubbedLockProvider.class,
+                            TestSchedulerLockInterceptor.class,
                             LockableService.class)
                     .addAsResource(new StringAsset("quarkus.shedlock.defaults-lock-at-most-for=PT30S\n" +
                             "quarkus.datasource.devservices.reuse=false"),
@@ -29,16 +29,16 @@ public class CommonSchedulerLockTest {
     LockableService lockableService;
 
     @Inject
-    DefaultLockProvider defaultLockProvider;
+    StubbedLockProvider stubbedLockProvider;
 
     @Test
-    public void shouldIntercept() {
+    void shouldIntercept() {
         // Given
 
         // When
         lockableService.execute();
 
         // Then
-        assertThat(defaultLockProvider.hasBeenCalled()).isTrue();
+        assertThat(stubbedLockProvider.hasBeenCalled()).isTrue();
     }
 }

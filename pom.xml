@@ -60,10 +60,27 @@
                         </compilerArgs>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>io.quarkus</groupId>
+                    <artifactId>quarkus-config-doc-maven-plugin</artifactId>
+                    <version>${quarkus.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
     <profiles>
+        <profile>
+            <id>docs</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>!true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>docs</module>
+            </modules>
+        </profile>
         <profile>
             <id>it</id>
             <activation>

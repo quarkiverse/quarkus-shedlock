@@ -1,0 +1,35 @@
+[.configuration-legend]
+icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
+[.configuration-reference.searchable, cols="80,.^10,.^10"]
+|===
+
+h|[.header-title]##Configuration property##
+h|Type
+h|Default
+
+h|[[quarkus-shedlock-provider-mongo-reactive_section_quarkus-shedlock-mongo-reactive]] [.section-name.section-level0]##link:#quarkus-shedlock-provider-mongo-reactive_section_quarkus-shedlock-mongo-reactive[Mongo client configuration]##
+h|Type
+h|Default
+
+a| [[quarkus-shedlock-provider-mongo-reactive_quarkus-shedlock-mongo-reactive-database-name]] [.property-path]##link:#quarkus-shedlock-provider-mongo-reactive_quarkus-shedlock-mongo-reactive-database-name[`quarkus.shedlock.mongo-reactive.database-name`]##
+
+`quarkus.shedlock.mongo-reactive."mongoclient-name".database-name`
+
+[.description]
+--
+database name for mongo client (default to shedLock)
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_SHEDLOCK_MONGO_REACTIVE_DATABASE_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_SHEDLOCK_MONGO_REACTIVE_DATABASE_NAME+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`shedLock`
+
+
+|===
+

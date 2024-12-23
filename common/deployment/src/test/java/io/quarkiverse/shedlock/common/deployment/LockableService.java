@@ -4,7 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class LockableService {
-    @DefaultSchedulerLock
+    @TestSchedulerLock
     void execute() {
     }
 }

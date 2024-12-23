@@ -1,0 +1,59 @@
+= Shedlock Mongo Reactive Provider
+
+include::./includes/attributes.adoc[]
+
+Shedlock Mongo Reactive provider give the ability to apply `distributed` locks using a mongo database using reactive mongo client.
+
+[[installation]]
+== Installation
+
+If you want to use this extension, you need to add the `io.quarkiverse.shedlock:quarkus-shedlock-provider-mongo-reactive` extension first to your build file.
+
+For instance, with Maven, add the following dependency to your POM file:
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+    <groupId>io.quarkiverse.shedlock</groupId>
+    <artifactId>quarkus-shedlock-provider-mongo-reactive</artifactId>
+    <version>{project-version}</version>
+</dependency>
+----
+
+[[configuring]]
+== Configuring
+
+The `quarkus.shedlock.defaults-lock-at-most-for` application property is mandatory. The collection naming is defined to `shedlock` and cannot be overridden.
+The database name is defined to `shedlock` and it is possible to override it depending on the mongo client name.
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.defaults-lock-at-most-for=PT30S
+quarkus.shedlock.mongo-reactive.cluster1.database-name=customDatabase
+----
+
+[[extension-configuration-reference]]
+== Extension Configuration Reference
+
+include::includes/quarkus-shedlock.adoc[opts=optional, leveloffset=+1]
+
+include::includes/quarkus-shedlock-provider-mongo-reactive.adoc[opts=optional, leveloffset=+1]
+
+== How to use it
+
+To activate the lock on a method just annotate it with `@MongoReactiveSchedulerLock`.
+
+[source,java]
+----
+include::{examples-dir}/MongoReactiveSchedulerLockService.java[indent=0,tabsize=2]
+----
+
+By default, the lock is bound to the `default` mongo client.
+
+The lock duration and mongoClientName can be defined on the annotation directly likes this way:
+
+[source,java]
+----
+include::{examples-dir}/MongoReactiveSchedulerLockServiceOptions.java[indent=0,tabsize=2]
+----

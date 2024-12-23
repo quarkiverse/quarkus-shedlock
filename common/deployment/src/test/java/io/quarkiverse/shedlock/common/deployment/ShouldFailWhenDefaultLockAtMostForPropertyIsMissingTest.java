@@ -10,21 +10,21 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-public class ShouldFailWhenDefaultLockAtMostForPropertyIsMissingTest {
+class ShouldFailWhenDefaultLockAtMostForPropertyIsMissingTest {
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(
-                            DefaultSchedulerLock.class,
-                            DefaultLockProvider.class,
-                            DefaultSchedulerLockInterceptor.class,
+                            TestSchedulerLock.class,
+                            StubbedLockProvider.class,
+                            TestSchedulerLockInterceptor.class,
                             LockableService.class))
             .assertException(throwable -> assertThat(throwable)
                     .hasNoSuppressedExceptions().hasMessageContaining("Configuration validation failed:\n" +
                             "\tjava.util.NoSuchElementException: SRCFG00014: The config property quarkus.shedlock.defaults-lock-at-most-for is required but it could not be found in any config source"));
 
     @Test
-    public void test() {
+    void test() {
         Assertions.fail("Startup should have failed");
     }
 }

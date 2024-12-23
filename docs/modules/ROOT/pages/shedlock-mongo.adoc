@@ -1,4 +1,4 @@
-= Shedlock In Memory Provider
+= Shedlock Mongo Provider
 
 include::./includes/attributes.adoc[]
 
@@ -38,7 +38,7 @@ quarkus.shedlock.mongo.cluster1.database-name=customDatabase
 
 include::includes/quarkus-shedlock.adoc[opts=optional, leveloffset=+1]
 
-include::includes/quarkus-shedlock-mongo.adoc[opts=optional, leveloffset=+1]
+include::includes/quarkus-shedlock-provider-mongo.adoc[opts=optional, leveloffset=+1]
 
 == How to use it
 

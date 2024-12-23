@@ -20,40 +20,50 @@ import io.quarkus.builder.Version;
 import io.quarkus.maven.dependency.Dependency;
 import io.quarkus.test.QuarkusUnitTest;
 
-public class MongoSchedulerLockTest {
+class MongoSchedulerLockTest {
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addClasses(LockableService.class)
+                    .addClasses(LockableResource.class)
                     .addAsResource(new StringAsset("quarkus.shedlock.defaults-lock-at-most-for=PT30S"),
                             "application.properties"))
             .setForcedDependencies(List.of(
                     Dependency.of("io.quarkus", "quarkus-mongodb-client", Version.getVersion())));
 
     @Inject
-    LockableService lockableService;
+    LockableResource lockableResource;
 
     @Inject
     MongoClient mongoClient;
 
     @Test
-    public void shouldUseDefaultDatabaseName() {
-        lockableService.execute();
+    void shouldLock() {
+        for (int called = 0; called < 5; called++) {
+            lockableResource.doSomething();
+        }
+
+        assertThat(lockableResource.getCallCount()).isEqualTo(1);
+    }
+
+    @Test
+    void shouldUseDefaultDatabaseName() {
+        lockableResource.doSomething();
 
         assertThat(mongoClient.listDatabaseNames()).contains("shedLock");
     }
 
     @Test
-    public void shouldCreateALock() {
-        lockableService.execute();
+    void shouldCreateALock() {
+        lockableResource.doSomething();
 
         assertThat(mongoClient.getDatabase("shedLock").getCollection("shedLock")
-                .countDocuments(eq("_id", "io.quarkiverse.shedlock.providers.mongo.deployment.LockableService_execute")))
+                .countDocuments(eq("_id", "io.quarkiverse.shedlock.providers.mongo.deployment.LockableResource_doSomething")))
                 .isEqualTo(1L);
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
+        lockableResource.reset();
         mongoClient.getDatabase("shedLock").drop();
     }
 }

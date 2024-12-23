@@ -7,6 +7,7 @@
         <groupId>io.quarkiverse.shedlock</groupId>
         <artifactId>quarkus-shedlock-parent</artifactId>
         <version>999-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>quarkus-shedlock-providers-parent</artifactId>
@@ -17,5 +18,6 @@
         <module>inmemory</module>
         <module>jdbc</module>
         <module>mongo</module>
+        <module>mongo-reactive</module>
     </modules>
 </project>

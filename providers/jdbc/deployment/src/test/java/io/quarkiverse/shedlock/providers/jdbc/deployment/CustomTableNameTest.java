@@ -23,14 +23,16 @@ import io.quarkus.builder.Version;
 import io.quarkus.maven.dependency.Dependency;
 import io.quarkus.test.QuarkusUnitTest;
 
-public class CustomTableNameTest {
+class CustomTableNameTest {
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addClasses(LockableService.class)
-                    .addAsResource(new StringAsset("quarkus.shedlock.defaults-lock-at-most-for=PT30S\n" +
-                            "quarkus.datasource.devservices.reuse=false\n" +
-                            "quarkus.shedlock.jdbc.table-name=myShedLockTableName"),
+                    .addClasses(LockableResource.class)
+                    // language=properties
+                    .addAsResource(new StringAsset("""
+                            quarkus.shedlock.defaults-lock-at-most-for=PT30S
+                            quarkus.datasource.devservices.reuse=false
+                            quarkus.shedlock.jdbc.table-name=myShedLockTableName"""),
                             "application.properties"))
             .setForcedDependencies(List.of(
                     Dependency.of("io.quarkus", "quarkus-jdbc-postgresql", Version.getVersion())));
@@ -39,7 +41,7 @@ public class CustomTableNameTest {
     AgroalDataSource defaultAgroalDataSource;
 
     @Test
-    public void shouldUseSpecifiedTableName() {
+    void shouldUseSpecifiedTableName() {
         final List<String> tablesName = new ArrayList<>();
         try (final Connection connection = defaultAgroalDataSource.getConnection();
                 final PreparedStatement selectTablesNameStatement = connection.prepareStatement(
@@ -56,7 +58,7 @@ public class CustomTableNameTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         try (final Connection connection = defaultAgroalDataSource.getConnection();
                 final PreparedStatement truncateStatement = connection.prepareStatement(
                         "TRUNCATE TABLE myshedlocktablename")) {
