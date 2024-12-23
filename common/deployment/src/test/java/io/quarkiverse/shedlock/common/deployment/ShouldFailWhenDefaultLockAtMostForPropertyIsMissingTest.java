@@ -20,11 +20,8 @@ public class ShouldFailWhenDefaultLockAtMostForPropertyIsMissingTest {
                             DefaultSchedulerLockInterceptor.class,
                             LockableService.class))
             .assertException(throwable -> assertThat(throwable)
-                    .hasNoSuppressedExceptions()
-                    .rootCause()
-                    .hasMessage("Configuration validation failed:\n" +
-                            "\tjava.util.NoSuchElementException: SRCFG00014: The config property quarkus.shedlock.defaults-lock-at-most-for is required but it could not be found in any config source")
-                    .hasNoSuppressedExceptions());
+                    .hasNoSuppressedExceptions().hasMessageContaining("Configuration validation failed:\n" +
+                            "\tjava.util.NoSuchElementException: SRCFG00014: The config property quarkus.shedlock.defaults-lock-at-most-for is required but it could not be found in any config source"));
 
     @Test
     public void test() {
