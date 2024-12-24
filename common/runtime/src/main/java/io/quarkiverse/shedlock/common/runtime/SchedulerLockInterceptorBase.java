@@ -23,7 +23,12 @@ public abstract class SchedulerLockInterceptorBase {
         this.instantProvider = Objects.requireNonNull(instantProvider);
     }
 
-    protected Object lock(InvocationContext context) throws Throwable {
+    protected Object lock(final InvocationContext context) throws Throwable {
+        // https://github.com/lukas-krecan/ShedLock/blob/master/cdi/shedlock-cdi/src/main/java/net/javacrumbs/shedlock/cdi/internal/SchedulerLockInterceptor.java#L43
+        final Class<?> returnType = context.getMethod().getReturnType();
+        if (!void.class.equals(returnType) && !Void.class.equals(returnType)) {
+            throw new LockingNotSupportedException();
+        }
         final LockingTaskExecutor lockingTaskExecutor = new DefaultLockingTaskExecutor(lockProvider(context.getMethod()));
         final LockDuration lockDuration = lockDuration(context.getMethod());
         final LockConfiguration lockConfiguration = new LockConfiguration(

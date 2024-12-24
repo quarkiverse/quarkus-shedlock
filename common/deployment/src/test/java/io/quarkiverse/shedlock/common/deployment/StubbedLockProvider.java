@@ -21,4 +21,8 @@ public class StubbedLockProvider implements LockProvider {
     public boolean hasBeenCalled() {
         return hasBeenCalled;
     }
+
+    public void reset() {
+        hasBeenCalled = false;
+    }
 }

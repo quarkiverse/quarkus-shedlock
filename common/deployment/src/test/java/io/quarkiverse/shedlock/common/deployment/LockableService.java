@@ -7,4 +7,9 @@ public class LockableService {
     @TestSchedulerLock
     void execute() {
     }
+
+    @TestSchedulerLock
+    Integer unsupportedReturn() {
+        return 0;
+    }
 }
