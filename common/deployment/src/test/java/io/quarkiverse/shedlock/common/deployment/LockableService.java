@@ -12,4 +12,9 @@ public class LockableService {
     Integer unsupportedReturn() {
         return 0;
     }
+
+    @TestSchedulerLock
+    void exception() {
+        throw new RuntimeException("Something went wrong");
+    }
 }

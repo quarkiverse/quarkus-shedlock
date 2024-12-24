@@ -10,6 +10,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -36,14 +37,17 @@ class CommonSchedulerLockTest {
     StubbedLockProvider stubbedLockProvider;
 
     @Test
-    void shouldIntercept() {
+    void shouldLockThenUnlock() {
         // Given
 
         // When
         lockableService.execute();
 
         // Then
-        assertThat(stubbedLockProvider.hasBeenCalled()).isTrue();
+        final String lockName = "io.quarkiverse.shedlock.common.deployment.LockableService_execute";
+        assertAll(
+                () -> assertThat(stubbedLockProvider.hasBeenLocked(lockName)).isTrue(),
+                () -> assertThat(stubbedLockProvider.hasBeenUnlocked(lockName)).isTrue());
     }
 
     @Test
@@ -55,9 +59,24 @@ class CommonSchedulerLockTest {
                 () -> assertThatThrownBy(() -> lockableService.unsupportedReturn())
                         .isInstanceOf(LockingNotSupportedException.class)
                         .hasMessage("Can not lock method returning value (do not know what to return if it's locked)"),
-                () -> assertThat(stubbedLockProvider.hasBeenCalled()).isFalse());
+                () -> assertThat(stubbedLockProvider.hasBeenLocked()).isFalse());
     }
 
+    @Test
+    void shouldUnLockWhenAnExceptionOccurred() {
+        // Given
+
+        // When && Then
+        final String lockName = "io.quarkiverse.shedlock.common.deployment.LockableService_exception";
+        assertAll(
+                () -> assertThatThrownBy(() -> lockableService.exception())
+                        .isInstanceOf(RuntimeException.class)
+                        .hasMessage("Something went wrong"),
+                () -> assertThat(stubbedLockProvider.hasBeenLocked(lockName)).isTrue(),
+                () -> assertThat(stubbedLockProvider.hasBeenUnlocked(lockName)).isTrue());
+    }
+
+    @BeforeEach
     @AfterEach
     void cleanup() {
         stubbedLockProvider.reset();
