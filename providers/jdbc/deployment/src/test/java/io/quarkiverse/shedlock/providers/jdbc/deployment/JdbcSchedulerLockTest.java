@@ -56,8 +56,8 @@ class JdbcSchedulerLockTest {
         final List<String> tablesName = new ArrayList<>();
         try (final Connection connection = agroalDataSource.getConnection();
                 final PreparedStatement selectTablesNameStatement = connection.prepareStatement(
-                        "SELECT table_name FROM information_schema.tables")) {
-            final ResultSet tablesNameResultSet = selectTablesNameStatement.executeQuery();
+                        "SELECT table_name FROM information_schema.tables");
+                final ResultSet tablesNameResultSet = selectTablesNameStatement.executeQuery()) {
             while (tablesNameResultSet.next()) {
                 tablesName.add(tablesNameResultSet.getString("table_name"));
             }
@@ -75,8 +75,8 @@ class JdbcSchedulerLockTest {
         final Integer count;
         try (final Connection connection = agroalDataSource.getConnection();
                 final PreparedStatement countLocksStatement = connection.prepareStatement(
-                        "SELECT COUNT(*) AS count FROM shedlock WHERE name = 'io.quarkiverse.shedlock.providers.jdbc.deployment.LockableResource_doSomething'")) {
-            final ResultSet countLocksResultSet = countLocksStatement.executeQuery();
+                        "SELECT COUNT(*) AS count FROM shedlock WHERE name = 'io.quarkiverse.shedlock.providers.jdbc.deployment.LockableResource_doSomething'");
+                final ResultSet countLocksResultSet = countLocksStatement.executeQuery()) {
             countLocksResultSet.next();
             count = countLocksResultSet.getInt("count");
         } catch (final SQLException e) {

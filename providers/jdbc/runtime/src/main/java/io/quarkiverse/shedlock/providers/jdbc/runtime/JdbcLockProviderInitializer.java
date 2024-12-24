@@ -52,12 +52,12 @@ public class JdbcLockProviderInitializer {
                               PRIMARY KEY (name)
                             )
                             """;
-                    try (final Connection connection = agroalDataSource.getConnection()) {
-                        final String tableName = Optional.ofNullable(jdbcConfig.dataSources().get(dataSourceName))
-                                .map(JdbcConfig.DataSourceConfig::tableName)
-                                .orElse(SchedulerLockInterceptorBase.SHED_LOCK);
-                        final PreparedStatement preparedStatement = connection
-                                .prepareStatement(String.format(databaseCreationSql, tableName));
+                    final String tableName = Optional.ofNullable(jdbcConfig.dataSources().get(dataSourceName))
+                            .map(JdbcConfig.DataSourceConfig::tableName)
+                            .orElse(SchedulerLockInterceptorBase.SHED_LOCK);
+                    try (final Connection connection = agroalDataSource.getConnection();
+                            final PreparedStatement preparedStatement = connection
+                                    .prepareStatement(String.format(databaseCreationSql, tableName))) {
                         preparedStatement.execute();
                     } catch (SQLException e) {
                         throw new RuntimeException(e);

@@ -45,8 +45,8 @@ class CustomTableNameTest {
         final List<String> tablesName = new ArrayList<>();
         try (final Connection connection = defaultAgroalDataSource.getConnection();
                 final PreparedStatement selectTablesNameStatement = connection.prepareStatement(
-                        "SELECT table_name FROM information_schema.tables")) {
-            final ResultSet tablesNameResultSet = selectTablesNameStatement.executeQuery();
+                        "SELECT table_name FROM information_schema.tables");
+                final ResultSet tablesNameResultSet = selectTablesNameStatement.executeQuery()) {
             while (tablesNameResultSet.next()) {
                 tablesName.add(tablesNameResultSet.getString("table_name"));
             }
