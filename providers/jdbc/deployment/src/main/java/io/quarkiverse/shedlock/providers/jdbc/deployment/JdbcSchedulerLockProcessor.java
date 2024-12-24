@@ -54,19 +54,22 @@ public class JdbcSchedulerLockProcessor {
                 .toList();
     }
 
+    // FIXME do not build due to this issue: https://github.com/quarkusio/quarkus/issues/39169
+    // Fixed and should be released in the next release
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
-    SyntheticBeanBuildItem registerJdbcLockProviderInitializer(
+    List<SyntheticBeanBuildItem> registerJdbcLockProviderInitializer(
             final ApplicationIndexBuildItem applicationIndexBuildItem,
-            final DataSourcesRecorder dataSourcesRecorder) {
-        final List<DataSourceName> dataSourceNames = getDataSourcesNameFromJdbcSchedulerLocks(applicationIndexBuildItem)
-                .stream().map(DataSourceName::new)
+            final DataSourceNameRecorder dataSourceNameRecorder) {
+        final List<String> dataSourceNames = getDataSourcesNameFromJdbcSchedulerLocks(applicationIndexBuildItem);
+        return dataSourceNames.stream()
+                .map(dataSourceName -> SyntheticBeanBuildItem.configure(DataSourceName.class)
+                        .scope(Singleton.class)
+                        .identifier(dataSourceName)
+                        .supplier(dataSourceNameRecorder.dataSourceNameSupplier(dataSourceName))
+                        .unremovable()
+                        .done())
                 .toList();
-        return SyntheticBeanBuildItem.configure(DataSources.class)
-                .scope(Singleton.class)
-                .supplier(dataSourcesRecorder.dataSourcesSupplier(dataSourceNames))
-                .unremovable()
-                .done();
     }
 
     private List<String> getDataSourcesNameFromJdbcSchedulerLocks(ApplicationIndexBuildItem applicationIndexBuildItem) {
