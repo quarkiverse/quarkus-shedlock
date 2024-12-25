@@ -1,5 +1,6 @@
 package io.quarkiverse.shedlock.providers.inmemory.deployment;
 
+import io.quarkiverse.shedlock.providers.inmemory.runtime.DefaultInMemoryLockProvider;
 import io.quarkiverse.shedlock.providers.inmemory.runtime.InMemorySchedulerLockInterceptor;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -20,7 +21,7 @@ public class InMemorySchedulerLockProcessor {
         additionalBeanBuildItemProducer.produce(
                 AdditionalBeanBuildItem.builder()
                         .setUnremovable()
-                        .addBeanClasses(InMemorySchedulerLockInterceptor.class)
+                        .addBeanClasses(InMemorySchedulerLockInterceptor.class, DefaultInMemoryLockProvider.class)
                         .build());
     }
 }
