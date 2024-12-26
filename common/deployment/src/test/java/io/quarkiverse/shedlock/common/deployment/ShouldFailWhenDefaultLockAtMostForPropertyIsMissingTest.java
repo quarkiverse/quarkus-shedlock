@@ -18,7 +18,7 @@ class ShouldFailWhenDefaultLockAtMostForPropertyIsMissingTest {
                             TestSchedulerLock.class,
                             StubbedLockProvider.class,
                             TestSchedulerLockInterceptor.class,
-                            LockableService.class))
+                            LockableByInterceptorsService.class))
             .assertException(throwable -> assertThat(throwable)
                     .hasNoSuppressedExceptions().hasMessageContaining("Configuration validation failed:\n" +
                             "\tjava.util.NoSuchElementException: SRCFG00014: The config property quarkus.shedlock.defaults-lock-at-most-for is required but it could not be found in any config source"));

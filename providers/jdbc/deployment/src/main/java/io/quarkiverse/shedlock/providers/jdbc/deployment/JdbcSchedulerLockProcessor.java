@@ -1,12 +1,21 @@
 package io.quarkiverse.shedlock.providers.jdbc.deployment;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.inject.Singleton;
 
+import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.ClassType;
 import org.jboss.jandex.DotName;
+import org.jboss.jandex.IndexView;
 
+import io.quarkiverse.shedlock.common.runtime.InstantProvider;
+import io.quarkiverse.shedlock.common.runtime.SchedulerLockExecutor;
+import io.quarkiverse.shedlock.common.runtime.ShedLockConfiguration;
 import io.quarkiverse.shedlock.providers.jdbc.runtime.*;
 import io.quarkus.agroal.spi.JdbcDataSourceBuildItem;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
@@ -17,7 +26,7 @@ import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
-import io.quarkus.deployment.builditem.ApplicationIndexBuildItem;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 public class JdbcSchedulerLockProcessor {
@@ -40,9 +49,9 @@ public class JdbcSchedulerLockProcessor {
 
     @BuildStep
     List<ValidationErrorBuildItem> validateDataSourcesDefinitionsWhenJdbcShedLockIsUsed(
-            final ApplicationIndexBuildItem applicationIndexBuildItem,
+            final CombinedIndexBuildItem combinedIndexBuildItem,
             final List<JdbcDataSourceBuildItem> jdbcDataSourceBuildItems) {
-        final List<String> dataSourceNames = getDataSourcesNameFromJdbcSchedulerLocks(applicationIndexBuildItem);
+        final List<String> dataSourceNames = getDataSourcesNameFromJdbcSchedulerLocks(combinedIndexBuildItem);
         return dataSourceNames
                 .stream()
                 .filter(shedLockDataSourceName -> jdbcDataSourceBuildItems.stream().map(JdbcDataSourceBuildItem::getName)
@@ -54,14 +63,12 @@ public class JdbcSchedulerLockProcessor {
                 .toList();
     }
 
-    // FIXME do not build due to this issue: https://github.com/quarkusio/quarkus/issues/39169
-    // Fixed and should be released in the next release
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
     List<SyntheticBeanBuildItem> registerJdbcLockProviderInitializer(
-            final ApplicationIndexBuildItem applicationIndexBuildItem,
+            final CombinedIndexBuildItem combinedIndexBuildItem,
             final DataSourceNameRecorder dataSourceNameRecorder) {
-        final List<String> dataSourceNames = getDataSourcesNameFromJdbcSchedulerLocks(applicationIndexBuildItem);
+        final List<String> dataSourceNames = getDataSourcesNameFromJdbcSchedulerLocks(combinedIndexBuildItem);
         return dataSourceNames.stream()
                 .map(dataSourceName -> SyntheticBeanBuildItem.configure(DataSourceName.class)
                         .scope(Singleton.class)
@@ -72,13 +79,13 @@ public class JdbcSchedulerLockProcessor {
                 .toList();
     }
 
-    private List<String> getDataSourcesNameFromJdbcSchedulerLocks(ApplicationIndexBuildItem applicationIndexBuildItem) {
+    private List<String> getDataSourcesNameFromJdbcSchedulerLocks(final CombinedIndexBuildItem combinedIndexBuildItem) {
         final DotName jdbcSchedulerLock = DotName.createSimple(JdbcSchedulerLock.class);
         return Stream.concat(
-                applicationIndexBuildItem.getIndex().getKnownClasses()
+                combinedIndexBuildItem.getIndex().getKnownClasses()
                         .stream().filter(classInfo -> classInfo.hasAnnotation(jdbcSchedulerLock))
                         .map(classInfo -> classInfo.annotation(jdbcSchedulerLock)),
-                applicationIndexBuildItem.getIndex().getKnownClasses().stream()
+                combinedIndexBuildItem.getIndex().getKnownClasses().stream()
                         .flatMap(classInfo -> classInfo.methods().stream())
                         .filter(methodInfo -> methodInfo.hasAnnotation(jdbcSchedulerLock))
                         .map(methodInfo -> methodInfo.annotation(jdbcSchedulerLock)))
@@ -87,5 +94,62 @@ public class JdbcSchedulerLockProcessor {
                         : DataSourceUtil.DEFAULT_DATASOURCE_NAME)
                 .distinct()
                 .toList();
+    }
+
+    @BuildStep
+    @Record(ExecutionTime.RUNTIME_INIT)
+    List<SyntheticBeanBuildItem> registerJdbcSchedulerLockExecutors(
+            final CombinedIndexBuildItem combinedIndexBuildItem,
+            final ShedLockConfiguration shedLockConfiguration,
+            final JdbcConfig jdbcConfig,
+            final JdbcSchedulerLockExecutorRecorder jdbcSchedulerLockExecutorRecorder) {
+        final IndexView index = combinedIndexBuildItem.getComputingIndex();
+        final Set<Qualifier> qualifiers = combinedIndexBuildItem.getIndex()
+                .getAnnotations(DotName.createSimple(JdbcSchedulerLockExecutor.class))
+                .stream()
+                .map(qualifier -> {
+                    final String dataSourceName = qualifier.valueWithDefault(index, "dataSourceName").asString();
+                    final String lockAtMostFor = qualifier.valueWithDefault(index, "lockAtMostFor").asString();
+                    final String lockAtLeastFor = qualifier.valueWithDefault(index, "lockAtLeastFor").asString();
+                    return new Qualifier(dataSourceName, lockAtMostFor, lockAtLeastFor);
+                })
+                .collect(Collectors.toSet());
+
+        return qualifiers.stream()
+                .map(qualifier -> SyntheticBeanBuildItem.configure(SchedulerLockExecutor.class)
+                        .scope(Singleton.class)
+                        .createWith(jdbcSchedulerLockExecutorRecorder.schedulerLockExecutorSupplier(shedLockConfiguration,
+                                jdbcConfig,
+                                qualifier.dataSourceName,
+                                qualifier.lockAtMostFor,
+                                qualifier.lockAtLeastFor))
+                        .addQualifier(qualifier.toQualifier())
+                        .addInjectionPoint(ClassType.create(DotName.createSimple(InstantProvider.class)))
+                        .unremovable()
+                        .setRuntimeInit()
+                        .done())
+                .toList();
+    }
+
+    // https://github.com/quarkusio/quarkus/issues/45289
+    @BuildStep
+    AdditionalBeanBuildItem registerQualifier() {
+        return new AdditionalBeanBuildItem(JdbcSchedulerLockExecutor.class);
+    }
+
+    record Qualifier(String dataSourceName, String lockAtMostFor, String lockAtLeastFor) {
+        Qualifier {
+            Objects.requireNonNull(dataSourceName);
+            Objects.requireNonNull(lockAtMostFor);
+            Objects.requireNonNull(lockAtLeastFor);
+        }
+
+        AnnotationInstance toQualifier() {
+            return AnnotationInstance.builder(JdbcSchedulerLockExecutor.class)
+                    .add("dataSourceName", dataSourceName)
+                    .add("lockAtMostFor", lockAtMostFor)
+                    .add("lockAtLeastFor", lockAtLeastFor)
+                    .build();
+        }
     }
 }

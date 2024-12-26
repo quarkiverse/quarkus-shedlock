@@ -3,7 +3,7 @@ package io.quarkiverse.shedlock.common.deployment;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class LockableService {
+public class LockableByInterceptorsService {
     @TestSchedulerLock
     void execute() {
     }

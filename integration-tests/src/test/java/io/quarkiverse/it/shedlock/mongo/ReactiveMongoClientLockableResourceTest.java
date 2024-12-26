@@ -2,6 +2,7 @@ package io.quarkiverse.it.shedlock.mongo;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,10 +13,10 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 class ReactiveMongoClientLockableResourceTest {
     @Test
-    void shouldLockUsingMongoDefaultStorage() {
-        for (int called = 0; called < 5; called++) {
+    void shouldLockUsingMongoDefaultStorageUsingInterceptor() {
+        for (int execution = 0; execution < 5; execution++) {
             given()
-                    .when().post("/mongoStorageLockableResource/reactive/default")
+                    .when().post("/mongoStorageLockableResource/interceptor/reactive/default")
                     .then()
                     .statusCode(204);
         }
@@ -29,12 +30,68 @@ class ReactiveMongoClientLockableResourceTest {
     }
 
     @Test
-    void shouldLockUsingMongoClusterOneStorage() {
-        for (int called = 0; called < 5; called++) {
+    void shouldLockUsingMongoClusterOneStorageUsingInterceptor() {
+        for (int execution = 0; execution < 5; execution++) {
             given()
-                    .when().post("/mongoStorageLockableResource/reactive/clusterOne")
+                    .when().post("/mongoStorageLockableResource/interceptor/reactive/clusterOne")
                     .then()
                     .statusCode(204);
+        }
+
+        given()
+                .when().get("/mongoStorageLockableResource/callCount")
+                .then()
+                .log().all()
+                .statusCode(200)
+                .body(is("1"));
+    }
+
+    @Test
+    void shouldLockUsingMongoDefaultStorageUsingExecutor() {
+        for (int execution = 0; execution < 5; execution++) {
+            if (execution == 0) {
+                given()
+                        .when().post("/mongoStorageLockableResource/execute/reactive/default")
+                        .then()
+                        .statusCode(200)
+                        .body("executed", is(true))
+                        .body("result", is(1));
+            } else {
+                given()
+                        .when().post("/mongoStorageLockableResource/execute/reactive/default")
+                        .then()
+                        .statusCode(200)
+                        .body("executed", is(false))
+                        .body("result", nullValue());
+            }
+        }
+
+        given()
+                .when().get("/mongoStorageLockableResource/callCount")
+                .then()
+                .log().all()
+                .statusCode(200)
+                .body(is("1"));
+    }
+
+    @Test
+    void shouldLockUsingMongoClusterOneStorageUsingExecutor() {
+        for (int execution = 0; execution < 5; execution++) {
+            if (execution == 0) {
+                given()
+                        .when().post("/mongoStorageLockableResource/execute/reactive/clusterOne")
+                        .then()
+                        .statusCode(200)
+                        .body("executed", is(true))
+                        .body("result", is(1));
+            } else {
+                given()
+                        .when().post("/mongoStorageLockableResource/execute/reactive/clusterOne")
+                        .then()
+                        .statusCode(200)
+                        .body("executed", is(false))
+                        .body("result", nullValue());
+            }
         }
 
         given()

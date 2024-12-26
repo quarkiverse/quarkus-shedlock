@@ -14,8 +14,8 @@ public abstract class AbstractLockableResource {
         this.callCounter = new AtomicInteger();
     }
 
-    protected final void doSomething() {
-        callCounter.incrementAndGet();
+    protected final int doSomething() {
+        return callCounter.incrementAndGet();
     }
 
     @POST
