@@ -1,5 +1,6 @@
 package io.quarkiverse.it.shedlock;
 
+import java.time.Duration;
 import java.util.Objects;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,8 +21,7 @@ public class InMemoryStorageLockableResource extends AbstractLockableResource {
 
     final SchedulerLockExecutor schedulerLockExecutor;
 
-    public InMemoryStorageLockableResource(
-            @InMemorySchedulerLockExecutor(lockAtMostFor = "PT30S", lockAtLeastFor = "PT10S") final SchedulerLockExecutor schedulerLockExecutor) {
+    public InMemoryStorageLockableResource(@InMemorySchedulerLockExecutor final SchedulerLockExecutor schedulerLockExecutor) {
         this.schedulerLockExecutor = Objects.requireNonNull(schedulerLockExecutor);
     }
 
@@ -36,7 +36,8 @@ public class InMemoryStorageLockableResource extends AbstractLockableResource {
     @Path("execute")
     @Produces(MediaType.APPLICATION_JSON)
     public ExecutionResultDTO executeSomethingUsingInMemoryStorageForLock() {
-        final TaskResult<Integer> result = schedulerLockExecutor.executeWithLock(this::doSomething, "counterInMemory");
+        final TaskResult<Integer> result = schedulerLockExecutor.executeWithLock(this::doSomething, "counterInMemory",
+                Duration.ofSeconds(30), Duration.ofSeconds(10));
         return new ExecutionResultDTO(result);
     }
 

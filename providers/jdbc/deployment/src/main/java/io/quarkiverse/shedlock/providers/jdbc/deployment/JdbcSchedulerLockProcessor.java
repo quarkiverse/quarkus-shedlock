@@ -109,9 +109,7 @@ public class JdbcSchedulerLockProcessor {
                 .stream()
                 .map(qualifier -> {
                     final String dataSourceName = qualifier.valueWithDefault(index, "dataSourceName").asString();
-                    final String lockAtMostFor = qualifier.valueWithDefault(index, "lockAtMostFor").asString();
-                    final String lockAtLeastFor = qualifier.valueWithDefault(index, "lockAtLeastFor").asString();
-                    return new Qualifier(dataSourceName, lockAtMostFor, lockAtLeastFor);
+                    return new Qualifier(dataSourceName);
                 })
                 .collect(Collectors.toSet());
 
@@ -120,9 +118,7 @@ public class JdbcSchedulerLockProcessor {
                         .scope(Singleton.class)
                         .createWith(jdbcSchedulerLockExecutorRecorder.schedulerLockExecutorSupplier(shedLockConfiguration,
                                 jdbcConfig,
-                                qualifier.dataSourceName,
-                                qualifier.lockAtMostFor,
-                                qualifier.lockAtLeastFor))
+                                qualifier.dataSourceName))
                         .addQualifier(qualifier.toQualifier())
                         .addInjectionPoint(ClassType.create(DotName.createSimple(InstantProvider.class)))
                         .unremovable()
@@ -131,24 +127,19 @@ public class JdbcSchedulerLockProcessor {
                 .toList();
     }
 
-    // https://github.com/quarkusio/quarkus/issues/45289
     @BuildStep
     AdditionalBeanBuildItem registerQualifier() {
         return new AdditionalBeanBuildItem(JdbcSchedulerLockExecutor.class);
     }
 
-    record Qualifier(String dataSourceName, String lockAtMostFor, String lockAtLeastFor) {
+    record Qualifier(String dataSourceName) {
         Qualifier {
             Objects.requireNonNull(dataSourceName);
-            Objects.requireNonNull(lockAtMostFor);
-            Objects.requireNonNull(lockAtLeastFor);
         }
 
         AnnotationInstance toQualifier() {
             return AnnotationInstance.builder(JdbcSchedulerLockExecutor.class)
                     .add("dataSourceName", dataSourceName)
-                    .add("lockAtMostFor", lockAtMostFor)
-                    .add("lockAtLeastFor", lockAtLeastFor)
                     .build();
         }
     }

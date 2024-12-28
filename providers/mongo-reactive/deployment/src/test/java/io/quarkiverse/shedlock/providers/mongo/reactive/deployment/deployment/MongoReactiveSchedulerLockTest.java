@@ -4,6 +4,7 @@ import static com.mongodb.client.model.Filters.eq;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,7 +45,7 @@ class MongoReactiveSchedulerLockTest {
     ReactiveMongoClient reactiveMongoClient;
 
     @Inject
-    @MongoReactiveSchedulerLockExecutor(lockAtMostFor = "PT30S", lockAtLeastFor = "PT10S")
+    @MongoReactiveSchedulerLockExecutor
     SchedulerLockExecutor schedulerLockExecutor;
 
     @Test
@@ -52,7 +53,6 @@ class MongoReactiveSchedulerLockTest {
         for (int called = 0; called < 5; called++) {
             lockableResource.doSomething();
         }
-
         assertThat(lockableResource.getCallCount()).isEqualTo(1);
     }
 
@@ -77,7 +77,8 @@ class MongoReactiveSchedulerLockTest {
 
         // When
         for (int execution = 0; execution < 5; execution++) {
-            results.add(schedulerLockExecutor.executeWithLock(counterTask, "counter"));
+            results.add(schedulerLockExecutor.executeWithLock(counterTask, "counter",
+                    Duration.ofSeconds(30), Duration.ofSeconds(10)));
         }
 
         // Then
@@ -103,7 +104,7 @@ class MongoReactiveSchedulerLockTest {
 
         // When
         final LockingTaskExecutor.TaskResult<Integer> integerTaskResult = schedulerLockExecutor.executeWithLock(counterTask,
-                "counter");
+                "counter", Duration.ofSeconds(30), Duration.ofSeconds(10));
         Validate.validState(integerTaskResult.wasExecuted());
 
         // Then

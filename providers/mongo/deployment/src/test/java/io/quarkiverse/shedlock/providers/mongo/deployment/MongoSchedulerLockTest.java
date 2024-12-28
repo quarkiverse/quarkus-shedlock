@@ -4,6 +4,7 @@ import static com.mongodb.client.model.Filters.eq;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,7 +45,7 @@ class MongoSchedulerLockTest {
     MongoClient mongoClient;
 
     @Inject
-    @MongoSchedulerLockExecutor(lockAtMostFor = "PT30S", lockAtLeastFor = "PT10S")
+    @MongoSchedulerLockExecutor
     SchedulerLockExecutor schedulerLockExecutor;
 
     @Test
@@ -75,7 +76,8 @@ class MongoSchedulerLockTest {
 
         // When
         for (int execution = 0; execution < 5; execution++) {
-            results.add(schedulerLockExecutor.executeWithLock(counterTask, "counter"));
+            results.add(schedulerLockExecutor.executeWithLock(counterTask, "counter",
+                    Duration.ofSeconds(30), Duration.ofSeconds(10)));
         }
 
         // Then
@@ -101,7 +103,7 @@ class MongoSchedulerLockTest {
 
         // When
         final LockingTaskExecutor.TaskResult<Integer> integerTaskResult = schedulerLockExecutor.executeWithLock(counterTask,
-                "counter");
+                "counter", Duration.ofSeconds(30), Duration.ofSeconds(10));
         Validate.validState(integerTaskResult.wasExecuted());
 
         // Then

@@ -7,7 +7,4 @@ import jakarta.inject.Qualifier;
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 public @interface InMemorySchedulerLockExecutor {
-    String lockAtMostFor() default "";
-
-    String lockAtLeastFor() default "";
 }

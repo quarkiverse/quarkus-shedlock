@@ -12,17 +12,14 @@ import io.quarkus.runtime.annotations.Recorder;
 public class InMemorySchedulerLockExecutorRecorder {
 
     public Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor> schedulerLockExecutorSupplier(
-            final ShedLockConfiguration shedLockConfiguration,
-            final String lockAtMostFor,
-            final String lockAtLeastFor) {
+            final ShedLockConfiguration shedLockConfiguration) {
         return new Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor>() {
             @Override
             public SchedulerLockExecutor apply(final SyntheticCreationalContext<SchedulerLockExecutor> context) {
                 return new SchedulerLockExecutor(
                         shedLockConfiguration,
                         context.getInjectedReference(InstantProvider.class),
-                        context.getInjectedReference(DefaultInMemoryLockProvider.class),
-                        lockAtMostFor, lockAtLeastFor);
+                        context.getInjectedReference(DefaultInMemoryLockProvider.class));
             }
         };
     }

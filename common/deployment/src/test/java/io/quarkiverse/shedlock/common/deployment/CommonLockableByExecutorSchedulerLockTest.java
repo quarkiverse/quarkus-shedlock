@@ -47,7 +47,7 @@ class CommonLockableByExecutorSchedulerLockTest {
         final String lockName = "counter";
 
         // When
-        final TaskResult<Integer> result = schedulerLockExecutor.executeWithLock(counterTask, lockName);
+        final TaskResult<Integer> result = schedulerLockExecutor.executeWithLock(counterTask, lockName, null, null);
 
         // Then
         assertAll(
@@ -67,7 +67,7 @@ class CommonLockableByExecutorSchedulerLockTest {
 
         // When && Then
         assertAll(
-                () -> assertThatThrownBy(() -> schedulerLockExecutor.executeWithLock(counterTask, lockName))
+                () -> assertThatThrownBy(() -> schedulerLockExecutor.executeWithLock(counterTask, lockName, null, null))
                         .isInstanceOf(RuntimeException.class)
                         .hasMessage("Something went wrong"),
                 () -> assertThat(stubbedLockProvider.hasBeenLocked(lockName)).isTrue(),

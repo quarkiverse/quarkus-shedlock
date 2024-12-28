@@ -12,8 +12,15 @@ h|Type
 h|Default
 
 a| [[quarkus-shedlock-provider-mongo_quarkus-shedlock-mongo-database-name]] [.property-path]##link:#quarkus-shedlock-provider-mongo_quarkus-shedlock-mongo-database-name[`quarkus.shedlock.mongo.database-name`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.shedlock.mongo.database-name+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.shedlock.mongo."mongoclient-name".database-name`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.shedlock.mongo."mongoclient-name".database-name+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --

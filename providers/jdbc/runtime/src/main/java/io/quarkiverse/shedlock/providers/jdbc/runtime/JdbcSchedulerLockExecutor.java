@@ -11,8 +11,4 @@ import io.quarkus.datasource.common.runtime.DataSourceUtil;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JdbcSchedulerLockExecutor {
     String dataSourceName() default DataSourceUtil.DEFAULT_DATASOURCE_NAME;
-
-    String lockAtMostFor() default "";
-
-    String lockAtLeastFor() default "";
 }

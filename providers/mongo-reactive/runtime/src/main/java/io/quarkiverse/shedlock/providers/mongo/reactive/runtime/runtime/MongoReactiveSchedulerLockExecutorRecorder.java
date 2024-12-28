@@ -24,9 +24,7 @@ public class MongoReactiveSchedulerLockExecutorRecorder {
     public Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor> schedulerLockExecutorSupplier(
             final ShedLockConfiguration shedLockConfiguration,
             final MongoReactiveConfig mongoReactiveConfig,
-            final String mongoClientName,
-            final String lockAtMostFor,
-            final String lockAtLeastFor) {
+            final String mongoClientName) {
         return new Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor>() {
             @Override
             public SchedulerLockExecutor apply(final SyntheticCreationalContext<SchedulerLockExecutor> context) {
@@ -42,8 +40,7 @@ public class MongoReactiveSchedulerLockExecutorRecorder {
                 return new SchedulerLockExecutor(
                         shedLockConfiguration,
                         context.getInjectedReference(InstantProvider.class),
-                        new ReactiveStreamsMongoLockProvider(database.unwrap()),
-                        lockAtMostFor, lockAtLeastFor);
+                        new ReactiveStreamsMongoLockProvider(database.unwrap()));
             }
         };
     }

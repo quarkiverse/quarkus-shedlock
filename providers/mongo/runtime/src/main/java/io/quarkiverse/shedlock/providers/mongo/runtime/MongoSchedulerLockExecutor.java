@@ -11,8 +11,4 @@ import io.quarkus.mongodb.runtime.MongoClientBeanUtil;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MongoSchedulerLockExecutor {
     String mongoClientName() default MongoClientBeanUtil.DEFAULT_MONGOCLIENT_NAME;
-
-    String lockAtMostFor() default "";
-
-    String lockAtLeastFor() default "";
 }

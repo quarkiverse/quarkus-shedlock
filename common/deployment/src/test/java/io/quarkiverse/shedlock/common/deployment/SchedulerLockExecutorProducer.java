@@ -14,6 +14,6 @@ public final class SchedulerLockExecutorProducer {
     public SchedulerLockExecutor schedulerLockExecutor(final ShedLockConfiguration shedLockConfiguration,
             final InstantProvider instantProvider,
             final LockProvider lockProvider) {
-        return new SchedulerLockExecutor(shedLockConfiguration, instantProvider, lockProvider, "", "");
+        return new SchedulerLockExecutor(shedLockConfiguration, instantProvider, lockProvider);
     }
 }

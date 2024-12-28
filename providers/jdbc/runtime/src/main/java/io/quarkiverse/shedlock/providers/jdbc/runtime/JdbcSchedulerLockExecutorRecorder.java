@@ -23,9 +23,7 @@ public class JdbcSchedulerLockExecutorRecorder {
     public Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor> schedulerLockExecutorSupplier(
             final ShedLockConfiguration shedLockConfiguration,
             final JdbcConfig jdbcConfig,
-            final String dataSourceName,
-            final String lockAtMostFor,
-            final String lockAtLeastFor) {
+            final String dataSourceName) {
         return new Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor>() {
             @Override
             public SchedulerLockExecutor apply(final SyntheticCreationalContext<SchedulerLockExecutor> context) {
@@ -40,8 +38,7 @@ public class JdbcSchedulerLockExecutorRecorder {
                 return new SchedulerLockExecutor(
                         shedLockConfiguration,
                         context.getInjectedReference(InstantProvider.class),
-                        new JdbcLockProvider(agroalDataSource, tableName),
-                        lockAtMostFor, lockAtLeastFor);
+                        new JdbcLockProvider(agroalDataSource, tableName));
             }
         };
     }

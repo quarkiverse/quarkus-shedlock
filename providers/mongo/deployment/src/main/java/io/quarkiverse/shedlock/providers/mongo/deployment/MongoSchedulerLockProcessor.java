@@ -48,7 +48,7 @@ public class MongoSchedulerLockProcessor {
 
     @BuildStep
     @Record(ExecutionTime.RUNTIME_INIT)
-    List<SyntheticBeanBuildItem> registerJdbcSchedulerLockExecutors(
+    List<SyntheticBeanBuildItem> registerMongoSchedulerLockExecutors(
             final CombinedIndexBuildItem combinedIndexBuildItem,
             final ShedLockConfiguration shedLockConfiguration,
             final MongoConfig mongoConfig,
@@ -59,9 +59,7 @@ public class MongoSchedulerLockProcessor {
                 .stream()
                 .map(qualifier -> {
                     final String mongoClientName = qualifier.valueWithDefault(index, "mongoClientName").asString();
-                    final String lockAtMostFor = qualifier.valueWithDefault(index, "lockAtMostFor").asString();
-                    final String lockAtLeastFor = qualifier.valueWithDefault(index, "lockAtLeastFor").asString();
-                    return new Qualifier(mongoClientName, lockAtMostFor, lockAtLeastFor);
+                    return new Qualifier(mongoClientName);
                 })
                 .collect(Collectors.toSet());
 
@@ -70,9 +68,7 @@ public class MongoSchedulerLockProcessor {
                         .scope(Singleton.class)
                         .createWith(mongoSchedulerLockExecutorRecorder.schedulerLockExecutorSupplier(shedLockConfiguration,
                                 mongoConfig,
-                                qualifier.mongoClientName,
-                                qualifier.lockAtMostFor,
-                                qualifier.lockAtLeastFor))
+                                qualifier.mongoClientName))
                         .addQualifier(qualifier.toQualifier())
                         .addInjectionPoint(ClassType.create(DotName.createSimple(InstantProvider.class)))
                         .unremovable()
@@ -81,24 +77,19 @@ public class MongoSchedulerLockProcessor {
                 .toList();
     }
 
-    // https://github.com/quarkusio/quarkus/issues/45289
     @BuildStep
     AdditionalBeanBuildItem registerQualifier() {
         return new AdditionalBeanBuildItem(MongoSchedulerLockExecutor.class);
     }
 
-    record Qualifier(String mongoClientName, String lockAtMostFor, String lockAtLeastFor) {
+    record Qualifier(String mongoClientName) {
         Qualifier {
             Objects.requireNonNull(mongoClientName);
-            Objects.requireNonNull(lockAtMostFor);
-            Objects.requireNonNull(lockAtLeastFor);
         }
 
         AnnotationInstance toQualifier() {
             return AnnotationInstance.builder(MongoSchedulerLockExecutor.class)
                     .add("mongoClientName", mongoClientName)
-                    .add("lockAtMostFor", lockAtMostFor)
-                    .add("lockAtLeastFor", lockAtLeastFor)
                     .build();
         }
     }

@@ -17,35 +17,17 @@ public final class SchedulerLockExecutor {
     private final ShedLockConfiguration shedLockConfiguration;
     private final InstantProvider instantProvider;
     private final LockProvider lockProvider;
-    private final Duration lockAtMostFor;
-    private final Duration lockAtLeastFor;
 
     public SchedulerLockExecutor(final ShedLockConfiguration shedLockConfiguration,
             final InstantProvider instantProvider,
-            final LockProvider lockProvider,
-            final String lockAtMostFor,
-            final String lockAtLeastFor) {
-        this(
-                shedLockConfiguration,
-                instantProvider,
-                lockProvider,
-                lockAtMostFor.isEmpty() ? null : parseDuration(lockAtMostFor),
-                lockAtLeastFor.isEmpty() ? null : parseDuration(lockAtLeastFor));
-    }
-
-    public SchedulerLockExecutor(final ShedLockConfiguration shedLockConfiguration,
-            final InstantProvider instantProvider,
-            final LockProvider lockProvider,
-            final Duration lockAtMostFor,
-            final Duration lockAtLeastFor) {
+            final LockProvider lockProvider) {
         this.shedLockConfiguration = Objects.requireNonNull(shedLockConfiguration);
         this.instantProvider = Objects.requireNonNull(instantProvider);
         this.lockProvider = Objects.requireNonNull(lockProvider);
-        this.lockAtMostFor = lockAtMostFor;
-        this.lockAtLeastFor = lockAtLeastFor;
     }
 
-    public <T> TaskResult<T> executeWithLock(final TaskWithResult<T> taskWithResult, final String lockName)
+    public <T> TaskResult<T> executeWithLock(final TaskWithResult<T> taskWithResult, final String lockName,
+            final Duration lockAtMostFor, final Duration lockAtLeastFor)
             throws LockException {
         Objects.requireNonNull(taskWithResult, "taskWithResult is null");
         Objects.requireNonNull(lockName, "lockName is null");
