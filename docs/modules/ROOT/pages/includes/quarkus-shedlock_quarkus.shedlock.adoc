@@ -1,0 +1,53 @@
+[.configuration-legend]
+icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
+[.configuration-reference.searchable, cols="80,.^10,.^10"]
+|===
+
+h|[.header-title]##Configuration property##
+h|Type
+h|Default
+
+a| [[quarkus-shedlock_quarkus-shedlock-defaults-lock-at-most-for]] [.property-path]##link:#quarkus-shedlock_quarkus-shedlock-defaults-lock-at-most-for[`quarkus.shedlock.defaults-lock-at-most-for`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.shedlock.defaults-lock-at-most-for+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+how long the lock should be kept in case the executing node dies
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_SHEDLOCK_DEFAULTS_LOCK_AT_MOST_FOR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_SHEDLOCK_DEFAULTS_LOCK_AT_MOST_FOR+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|required icon:exclamation-circle[title=Configuration property is required]
+
+a| [[quarkus-shedlock_quarkus-shedlock-defaults-lock-at-least-for]] [.property-path]##link:#quarkus-shedlock_quarkus-shedlock-defaults-lock-at-least-for[`quarkus.shedlock.defaults-lock-at-least-for`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.shedlock.defaults-lock-at-least-for+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+value which is much longer than normal execution time
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_SHEDLOCK_DEFAULTS_LOCK_AT_LEAST_FOR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_SHEDLOCK_DEFAULTS_LOCK_AT_LEAST_FOR+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+|===
+

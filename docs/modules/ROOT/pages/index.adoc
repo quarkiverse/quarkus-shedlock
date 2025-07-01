@@ -2,26 +2,26 @@
 
 include::./includes/attributes.adoc[]
 
-TIP: Describe what the extension does here.
+Propose a set of shedlock provider as extensions
 
-== Installation
+TIP: Each provider is autonomous and can be used in conjunction with others.
 
-If you want to use this extension, you need to add the `io.quarkiverse.shedlock:quarkus-shedlock` extension first to your build file.
+== Configuration
 
-For instance, with Maven, add the following dependency to your POM file:
+Each provider come with specific configuration regarding lock storage.
 
-[source,xml,subs=attributes+]
+The lock duration configuration is common for each provider and there values are overridable on the interceptor annotation.
+The `lockAtMostFor` and `lockAtLeastFor` can be defined. You can have a look to link:++https://github.com/lukas-krecan/ShedLock?tab=readme-ov-file#annotate-your-scheduled-tasks++[shedlock documentation] to know more about them.
+
+The `quarkus.shedlock.defaults-lock-at-most-for` application property is mandatory.
+
+[source,properties]
+.src/main/resources/application.properties
 ----
-<dependency>
-    <groupId>io.quarkiverse.shedlock</groupId>
-    <artifactId>quarkus-shedlock</artifactId>
-    <version>{project-version}</version>
-</dependency>
+quarkus.shedlock.defaults-lock-at-most-for=PT30S
 ----
 
 [[extension-configuration-reference]]
 == Extension Configuration Reference
 
-TIP: Remove this section if you don't have Quarkus configuration properties in your extension.
-
-include::includes/quarkus-shedlock.adoc[leveloffset=+1, opts=optional]
+include::includes/quarkus-shedlock.adoc[opts=optional, leveloffset=+1]

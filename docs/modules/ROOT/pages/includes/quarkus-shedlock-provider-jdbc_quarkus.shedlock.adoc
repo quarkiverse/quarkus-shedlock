@@ -1,0 +1,68 @@
+[.configuration-legend]
+icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
+[.configuration-reference.searchable, cols="80,.^10,.^10"]
+|===
+
+h|[.header-title]##Configuration property##
+h|Type
+h|Default
+
+h|[[quarkus-shedlock-provider-jdbc_section_quarkus-shedlock-jdbc]] [.section-name.section-level0]##link:#quarkus-shedlock-provider-jdbc_section_quarkus-shedlock-jdbc[data sources configuration]##
+h|Type
+h|Default
+
+a| [[quarkus-shedlock-provider-jdbc_quarkus-shedlock-jdbc-enable-table-creation]] [.property-path]##link:#quarkus-shedlock-provider-jdbc_quarkus-shedlock-jdbc-enable-table-creation[`quarkus.shedlock.jdbc.enable-table-creation`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.shedlock.jdbc.enable-table-creation+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.shedlock.jdbc."datasource-name".enable-table-creation`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.shedlock.jdbc."datasource-name".enable-table-creation+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+enable table creation
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_SHEDLOCK_JDBC_ENABLE_TABLE_CREATION+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_SHEDLOCK_JDBC_ENABLE_TABLE_CREATION+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`true`
+
+a| [[quarkus-shedlock-provider-jdbc_quarkus-shedlock-jdbc-table-name]] [.property-path]##link:#quarkus-shedlock-provider-jdbc_quarkus-shedlock-jdbc-table-name[`quarkus.shedlock.jdbc.table-name`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.shedlock.jdbc.table-name+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.shedlock.jdbc."datasource-name".table-name`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.shedlock.jdbc."datasource-name".table-name+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+table name for datasource (default to shedLock)
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_SHEDLOCK_JDBC_TABLE_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_SHEDLOCK_JDBC_TABLE_NAME+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`shedLock`
+
+
+|===
+

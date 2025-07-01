@@ -6,20 +6,41 @@
     <groupId>io.quarkiverse.shedlock</groupId>
     <artifactId>quarkus-shedlock-parent</artifactId>
     <version>999-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>quarkus-shedlock-integration-tests</artifactId>
   <name>Quarkus Shedlock - Integration Tests</name>
+
   <properties>
     <skipITs>true</skipITs>
   </properties>
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-reactive</artifactId>
+      <artifactId>quarkus-rest-jackson</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkiverse.shedlock</groupId>
-      <artifactId>quarkus-shedlock</artifactId>
+      <artifactId>quarkus-shedlock-provider-inmemory</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkiverse.shedlock</groupId>
+      <artifactId>quarkus-shedlock-provider-jdbc</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkiverse.shedlock</groupId>
+      <artifactId>quarkus-shedlock-provider-mongo</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkiverse.shedlock</groupId>
+      <artifactId>quarkus-shedlock-provider-mongo-reactive</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -28,8 +49,18 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5-mockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-devtools-testing</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -58,7 +89,8 @@
         </executions>
         <configuration>
           <systemPropertyVariables>
-            <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+            <native.image.path>${project.build.directory}/${project.build.finalName}-runner
+            </native.image.path>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <maven.home>${maven.home}</maven.home>
           </systemPropertyVariables>
@@ -86,7 +118,8 @@
       </build>
       <properties>
         <skipITs>false</skipITs>
-        <quarkus.package.type>native</quarkus.package.type>
+        <quarkus.native.enabled>true</quarkus.native.enabled>
+        <quarkus.package.jar.enabled>false</quarkus.package.jar.enabled>
       </properties>
     </profile>
   </profiles>

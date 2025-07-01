@@ -1,0 +1,12 @@
+name: "Shedlock"
+description: "Distributed lock for your scheduled tasks"
+metadata:
+  keywords:
+    - "shedlock"
+    - "provider"
+    - "jdbc"
+#  guide: https://quarkiverse.github.io/quarkiverse-docs/shedlock/dev/ # To create and publish this guide, see https://github.com/quarkiverse/quarkiverse/wiki#documenting-your-extension
+  categories:
+    - "miscellaneous"
+    - "data"
+  status: "preview"

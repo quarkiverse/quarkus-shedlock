@@ -1,0 +1,130 @@
+= Shedlock Jdbc Provider
+
+include::./includes/attributes.adoc[]
+
+Shedlock Jdbc provider give the ability to apply `distributed` locks using a jdbc database.
+
+[[installation]]
+== Installation
+
+If you want to use this extension, you need to add the `io.quarkiverse.shedlock:quarkus-shedlock-provider-jdbc` extension first to your build file with a `jdbc datasource`.
+
+For instance, with Maven, add the following dependency to your POM file:
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+    <groupId>io.quarkiverse.shedlock</groupId>
+    <artifactId>quarkus-shedlock-provider-jdbc</artifactId>
+    <version>{project-version}</version>
+</dependency>
+----
+
+and a jdbc datasource likes postgresql
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-jdbc-postgresql</artifactId>
+</dependency>
+----
+
+[[configuring]]
+== Configuring
+
+The `quarkus.shedlock.defaults-lock-at-most-for` application property is mandatory. The table name is defined to `shedlock` and can be overridden for the default datasource or another named jdbc datasource.
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.defaults-lock-at-most-for=PT30S
+quarkus.datasource.db-kind=postgresql
+----
+
+[[extension-configuration-reference]]
+== Extension Configuration Reference
+
+include::includes/quarkus-shedlock.adoc[opts=optional, leveloffset=+1]
+
+include::includes/quarkus-shedlock-provider-jdbc.adoc[opts=optional, leveloffset=+1]
+
+== How to use it
+
+To activate the lock on a method just annotate it with `@JdbcSchedulerLock`.
+
+[source,java]
+----
+include::{examples-dir}/JdbcSchedulerLockService.java[indent=0,tabsize=2]
+----
+
+=== Multiple data sources
+
+By default, the lock is bound to the `default` datasource.
+
+The lock duration and dataSourceName can be defined on the annotation directly likes this way:
+
+[source,java]
+----
+include::{examples-dir}/JdbcSchedulerLockServiceOptions.java[indent=0,tabsize=2]
+----
+
+Regarding this sample a `master` datasource must be defined has well.
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.defaults-lock-at-most-for=PT30S
+quarkus.datasource.master.db-kind=postgresql
+----
+
+if the datasource does not exist the application will refuse to start and a message will be produce to help configuring the application.
+
+=== Table storage
+
+By default, the table is created using `shedLock` naming.
+
+The name can be overridden by specifying another table name using this property `table-name`:
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.jdbc.table-name=myShedlockTable
+----
+
+or for a custom named source:
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.jdbc.customDataSource.table-name=myCustomDataSourceShedlockTable
+----
+
+However, following some enterprise organizations, it is not allowed to create a table due to missing admin right for security purpose.
+
+It is possible to disable the table creation by setting `enable-table-creation` to false like this way:
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.jdbc.enable-table-creation=false
+----
+
+or for a custom named source:
+
+[source,properties]
+.src/main/resources/application.properties
+----
+quarkus.shedlock.jdbc.customDataSource.enable-table-creation=false
+----
+
+The table create script is defined this way:
+
+[source,sql]
+CREATE TABLE IF NOT EXISTS shedlock (
+  name VARCHAR(255),
+  lock_until TIMESTAMP(3) NULL,
+  locked_at TIMESTAMP(3) NULL,
+  locked_by VARCHAR(255),
+  PRIMARY KEY (name)
+)
