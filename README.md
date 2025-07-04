@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://github.com/quarkiverse/.github/blob/main/assets/images/quarkus.svg" width="67" height="70" ><img src="https://github.com/quarkiverse/.github/blob/main/assets/images/plus-sign.svg" height="70" ><img src="https://github.com/quarkiverse/quarkus-shedlock/blob/main/docs/modules/ROOT/assets/images/shedlock.svg" height="70" >
+<img src="https://github.com/quarkiverse/.github/blob/main/assets/images/quarkus.svg" width="67" height="70" ><img src="https://github.com/quarkiverse/.github/blob/main/assets/images/plus-sign.svg" height="70" ><img src="https://github.com/quarkiverse/quarkus-shedlock/blob/main/docs/modules/ROOT/assets/images/shedlock.png" height="70" >
 
 # Quarkus Shedlock
 </div>
