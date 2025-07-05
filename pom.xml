@@ -8,14 +8,14 @@
     </parent>
     <groupId>io.quarkiverse.shedlock</groupId>
     <artifactId>quarkus-shedlock-parent</artifactId>
-    <version>0.0.2</version>
+    <version>999-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Quarkus Shedlock - Parent</name>
     <scm>
         <connection>scm:git:git@github.com:quarkiverse/quarkus-shedlock.git</connection>
         <developerConnection>scm:git:git@github.com:quarkiverse/quarkus-shedlock.git</developerConnection>
         <url>https://github.com/quarkiverse/quarkus-shedlock</url>
-      <tag>0.0.2</tag>
+      <tag>HEAD</tag>
   </scm>
     <modules>
         <module>common</module>
