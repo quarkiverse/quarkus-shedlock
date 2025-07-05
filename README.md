@@ -6,7 +6,7 @@
 </div>
 <br>
 
-[![Version](https://img.shields.io/maven-central/v/io.quarkiverse.shedlock/quarkus-shedlock?logo=apache-maven&style=flat-square)](https://central.sonatype.com/artifact/io.quarkiverse.shedlock/quarkus-shedlock-parent)
+[![Version](https://img.shields.io/maven-central/v/io.quarkiverse.shedlock/quarkus-shedlock-parent?logo=apache-maven&style=flat-square)](https://central.sonatype.com/artifact/io.quarkiverse.shedlock/quarkus-shedlock-parent)
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellow.svg?style=flat-square)](https://opensource.org/licenses/Apache-2.0)
 [![Build](https://github.com/quarkiverse/quarkus-shedlock/actions/workflows/build.yml/badge.svg)](https://github.com/quarkiverse/quarkus-shedlock/actions/workflows/build.yml)
 
