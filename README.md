@@ -1,9 +1,13 @@
 <div align="center">
+  <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+    <img src="https://raw.githubusercontent.com/quarkiverse/.github/main/assets/images/quarkus.svg" alt="Quarkus logo" style="height: 70px; width: auto;">
+    <img src="https://raw.githubusercontent.com/quarkiverse/.github/main/assets/images/plus-sign.svg" alt="Plus sign" style="height: 70px; width: auto;">
+    <img src="https://raw.githubusercontent.com/quarkiverse/quarkus-shedlock/main/docs/modules/ROOT/assets/images/shedlock.png" alt="Shedlock logo" style="height: 70px; width: auto;">
+  </div>
 
-<img src="https://github.com/quarkiverse/.github/blob/main/assets/images/quarkus.svg" width="67" height="70" ><img src="https://github.com/quarkiverse/quarkus-shedlock/blob/main/docs/modules/ROOT/assets/images/plus-sign.png" height="70" ><img src="https://github.com/quarkiverse/quarkus-shedlock/blob/main/docs/modules/ROOT/assets/images/shedlock.png" height="70" >
-
-# Quarkus Shedlock
+  <h1>Quarkus Shedlock</h1>
 </div>
+
 <br>
 
 [![Version](https://img.shields.io/maven-central/v/io.quarkiverse.shedlock/quarkus-shedlock-parent?logo=apache-maven&style=flat-square)](https://central.sonatype.com/artifact/io.quarkiverse.shedlock/quarkus-shedlock-parent)
