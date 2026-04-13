@@ -15,7 +15,7 @@
 [![Build](https://github.com/quarkiverse/quarkus-shedlock/actions/workflows/build.yml/badge.svg)](https://github.com/quarkiverse/quarkus-shedlock/actions/workflows/build.yml)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Overview
@@ -33,6 +33,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/dcdh"><img src="https://avatars.githubusercontent.com/u/5189615?v=4?s=100" width="100px;" alt="Damien Clément d'Huart"/><br /><sub><b>Damien Clément d'Huart</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-shedlock/commits?author=dcdh" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://programm.i.ng"><img src="https://avatars.githubusercontent.com/u/11370663?v=4?s=100" width="100px;" alt="Awulonu, Solomon Chidozie"/><br /><sub><b>Awulonu, Solomon Chidozie</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-shedlock/commits?author=solomonawulonu" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
