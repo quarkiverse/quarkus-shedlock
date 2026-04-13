@@ -42,14 +42,14 @@ public class InMemorySchedulerLockProcessor {
     @BuildStep
     @Record(ExecutionTime.RUNTIME_INIT)
     SyntheticBeanBuildItem registerInMemorySchedulerLockExecutor(
-            final ShedLockConfiguration shedLockConfiguration,
             final InMemorySchedulerLockExecutorRecorder inMemorySchedulerLockExecutorRecorder) {
         return SyntheticBeanBuildItem.configure(SchedulerLockExecutor.class)
                 .scope(Singleton.class)
-                .createWith(inMemorySchedulerLockExecutorRecorder.schedulerLockExecutorSupplier(shedLockConfiguration))
+                .createWith(inMemorySchedulerLockExecutorRecorder.schedulerLockExecutorSupplier())
                 .addQualifier(AnnotationInstance.builder(InMemorySchedulerLockExecutor.class).build())
-                .addInjectionPoint(ClassType.create(DotName.createSimple(DefaultInMemoryLockProvider.class)))
+                .addInjectionPoint(ClassType.create(DotName.createSimple(ShedLockConfiguration.class)))
                 .addInjectionPoint(ClassType.create(DotName.createSimple(InstantProvider.class)))
+                .addInjectionPoint(ClassType.create(DotName.createSimple(DefaultInMemoryLockProvider.class)))
                 .unremovable()
                 .setRuntimeInit()
                 .done();

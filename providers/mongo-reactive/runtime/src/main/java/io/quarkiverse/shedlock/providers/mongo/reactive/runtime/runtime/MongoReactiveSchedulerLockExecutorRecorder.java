@@ -14,7 +14,6 @@ import io.quarkus.arc.SyntheticCreationalContext;
 import io.quarkus.mongodb.MongoClientName;
 import io.quarkus.mongodb.reactive.ReactiveMongoClient;
 import io.quarkus.mongodb.reactive.ReactiveMongoDatabase;
-import io.quarkus.mongodb.runtime.MongoClientBeanUtil;
 import io.quarkus.runtime.annotations.Recorder;
 import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMongoLockProvider;
 
@@ -22,15 +21,17 @@ import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMon
 public class MongoReactiveSchedulerLockExecutorRecorder {
 
     public Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor> schedulerLockExecutorSupplier(
-            final ShedLockConfiguration shedLockConfiguration,
-            final MongoReactiveConfig mongoReactiveConfig,
             final String mongoClientName) {
         return new Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor>() {
             @Override
             public SchedulerLockExecutor apply(final SyntheticCreationalContext<SchedulerLockExecutor> context) {
+
+                MongoReactiveConfig mongoReactiveConfig = context.getInjectedReference(MongoReactiveConfig.class);
+
                 final ReactiveMongoClient mongoClient = Arc.container()
                         .select(ReactiveMongoClient.class,
-                                MongoClientBeanUtil.DEFAULT_MONGOCLIENT_NAME.equals(mongoClientName) ? new Default.Literal()
+                                io.quarkus.mongodb.runtime.MongoConfig.DEFAULT_REACTIVE_CLIENT_NAME.equals(mongoClientName)
+                                        ? new Default.Literal()
                                         : new MongoClientName.Literal(mongoClientName))
                         .get();
                 final String databaseName = Optional.ofNullable(mongoReactiveConfig.mongoclients().get(mongoClientName))
@@ -38,7 +39,7 @@ public class MongoReactiveSchedulerLockExecutorRecorder {
                         .orElse(SchedulerLockInterceptorBase.SHED_LOCK);
                 final ReactiveMongoDatabase database = mongoClient.getDatabase(databaseName);
                 return new SchedulerLockExecutor(
-                        shedLockConfiguration,
+                        context.getInjectedReference(ShedLockConfiguration.class),
                         context.getInjectedReference(InstantProvider.class),
                         new ReactiveStreamsMongoLockProvider(database.unwrap()));
             }

@@ -3,7 +3,6 @@ package io.quarkiverse.shedlock.providers.mongo.reactive.runtime.runtime;
 import java.util.Map;
 
 import io.quarkiverse.shedlock.common.runtime.SchedulerLockInterceptorBase;
-import io.quarkus.mongodb.runtime.MongoClientBeanUtil;
 import io.quarkus.runtime.annotations.*;
 import io.smallrye.config.*;
 
@@ -17,7 +16,7 @@ public interface MongoReactiveConfig {
     @ConfigDocMapKey("mongoclient-name")
     @WithParentName
     @WithDefaults
-    @WithUnnamedKey(MongoClientBeanUtil.DEFAULT_MONGOCLIENT_NAME)
+    @WithUnnamedKey(io.quarkus.mongodb.runtime.MongoConfig.DEFAULT_REACTIVE_CLIENT_NAME)
     Map<String, MongoClientConfig> mongoclients();
 
     @ConfigGroup

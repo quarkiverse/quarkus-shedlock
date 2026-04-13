@@ -100,8 +100,6 @@ public class JdbcSchedulerLockProcessor {
     @Record(ExecutionTime.RUNTIME_INIT)
     List<SyntheticBeanBuildItem> registerJdbcSchedulerLockExecutors(
             final CombinedIndexBuildItem combinedIndexBuildItem,
-            final ShedLockConfiguration shedLockConfiguration,
-            final JdbcConfig jdbcConfig,
             final JdbcSchedulerLockExecutorRecorder jdbcSchedulerLockExecutorRecorder) {
         final IndexView index = combinedIndexBuildItem.getComputingIndex();
         final Set<Qualifier> qualifiers = combinedIndexBuildItem.getIndex()
@@ -116,11 +114,11 @@ public class JdbcSchedulerLockProcessor {
         return qualifiers.stream()
                 .map(qualifier -> SyntheticBeanBuildItem.configure(SchedulerLockExecutor.class)
                         .scope(Singleton.class)
-                        .createWith(jdbcSchedulerLockExecutorRecorder.schedulerLockExecutorSupplier(shedLockConfiguration,
-                                jdbcConfig,
-                                qualifier.dataSourceName))
+                        .createWith(jdbcSchedulerLockExecutorRecorder.schedulerLockExecutorSupplier(qualifier.dataSourceName))
                         .addQualifier(qualifier.toQualifier())
+                        .addInjectionPoint(ClassType.create(DotName.createSimple(ShedLockConfiguration.class)))
                         .addInjectionPoint(ClassType.create(DotName.createSimple(InstantProvider.class)))
+                        .addInjectionPoint(ClassType.create(DotName.createSimple(JdbcConfig.class)))
                         .unremovable()
                         .setRuntimeInit()
                         .done())

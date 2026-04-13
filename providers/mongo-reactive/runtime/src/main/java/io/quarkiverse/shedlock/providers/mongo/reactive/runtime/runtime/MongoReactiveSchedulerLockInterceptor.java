@@ -18,7 +18,6 @@ import io.quarkus.arc.Arc;
 import io.quarkus.mongodb.MongoClientName;
 import io.quarkus.mongodb.reactive.ReactiveMongoClient;
 import io.quarkus.mongodb.reactive.ReactiveMongoDatabase;
-import io.quarkus.mongodb.runtime.MongoClientBeanUtil;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMongoLockProvider;
 
@@ -46,7 +45,8 @@ public class MongoReactiveSchedulerLockInterceptor extends SchedulerLockIntercep
         final String mongoClientName = method.getAnnotation(MongoReactiveSchedulerLock.class).mongoClientName();
         final ReactiveMongoClient mongoClient = Arc.container()
                 .select(ReactiveMongoClient.class,
-                        MongoClientBeanUtil.DEFAULT_MONGOCLIENT_NAME.equals(mongoClientName) ? new Default.Literal()
+                        io.quarkus.mongodb.runtime.MongoConfig.DEFAULT_REACTIVE_CLIENT_NAME.equals(mongoClientName)
+                                ? new Default.Literal()
                                 : new MongoClientName.Literal(mongoClientName))
                 .get();
         final String databaseName = Optional.ofNullable(mongoReactiveConfig.mongoclients().get(mongoClientName))

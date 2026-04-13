@@ -19,7 +19,6 @@ import io.quarkiverse.shedlock.common.runtime.SchedulerLockInterceptorBase;
 import io.quarkiverse.shedlock.common.runtime.ShedLockConfiguration;
 import io.quarkus.arc.Arc;
 import io.quarkus.mongodb.MongoClientName;
-import io.quarkus.mongodb.runtime.MongoClientBeanUtil;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.mongo.MongoLockProvider;
 
@@ -47,7 +46,8 @@ public class MongoSchedulerLockInterceptor extends SchedulerLockInterceptorBase 
         final String mongoClientName = method.getAnnotation(MongoSchedulerLock.class).mongoClientName();
         final MongoClient mongoClient = Arc.container()
                 .select(MongoClient.class,
-                        MongoClientBeanUtil.DEFAULT_MONGOCLIENT_NAME.equals(mongoClientName) ? new Default.Literal()
+                        io.quarkus.mongodb.runtime.MongoConfig.DEFAULT_CLIENT_NAME.equals(mongoClientName)
+                                ? new Default.Literal()
                                 : new MongoClientName.Literal(mongoClientName))
                 .get();
         final String databaseName = Optional.ofNullable(mongoConfig.mongoclients().get(mongoClientName))

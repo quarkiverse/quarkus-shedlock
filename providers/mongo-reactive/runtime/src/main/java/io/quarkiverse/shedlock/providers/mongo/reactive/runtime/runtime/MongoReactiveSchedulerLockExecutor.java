@@ -5,10 +5,8 @@ import java.lang.annotation.RetentionPolicy;
 
 import jakarta.inject.Qualifier;
 
-import io.quarkus.mongodb.runtime.MongoClientBeanUtil;
-
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MongoReactiveSchedulerLockExecutor {
-    String mongoClientName() default MongoClientBeanUtil.DEFAULT_MONGOCLIENT_NAME;
+    String mongoClientName() default io.quarkus.mongodb.runtime.MongoConfig.DEFAULT_REACTIVE_CLIENT_NAME;
 }

@@ -50,8 +50,6 @@ public class MongoSchedulerLockProcessor {
     @Record(ExecutionTime.RUNTIME_INIT)
     List<SyntheticBeanBuildItem> registerMongoSchedulerLockExecutors(
             final CombinedIndexBuildItem combinedIndexBuildItem,
-            final ShedLockConfiguration shedLockConfiguration,
-            final MongoConfig mongoConfig,
             final MongoSchedulerLockExecutorRecorder mongoSchedulerLockExecutorRecorder) {
         final IndexView index = combinedIndexBuildItem.getComputingIndex();
         final Set<Qualifier> qualifiers = combinedIndexBuildItem.getIndex()
@@ -66,11 +64,11 @@ public class MongoSchedulerLockProcessor {
         return qualifiers.stream()
                 .map(qualifier -> SyntheticBeanBuildItem.configure(SchedulerLockExecutor.class)
                         .scope(Singleton.class)
-                        .createWith(mongoSchedulerLockExecutorRecorder.schedulerLockExecutorSupplier(shedLockConfiguration,
-                                mongoConfig,
-                                qualifier.mongoClientName))
+                        .createWith(mongoSchedulerLockExecutorRecorder.schedulerLockExecutorSupplier(qualifier.mongoClientName))
                         .addQualifier(qualifier.toQualifier())
+                        .addInjectionPoint(ClassType.create(DotName.createSimple(ShedLockConfiguration.class)))
                         .addInjectionPoint(ClassType.create(DotName.createSimple(InstantProvider.class)))
+                        .addInjectionPoint(ClassType.create(DotName.createSimple(MongoConfig.class)))
                         .unremovable()
                         .setRuntimeInit()
                         .done())
