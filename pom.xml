@@ -28,8 +28,8 @@
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus.version>3.24.2</quarkus.version>
-        <shedlock.version>7.0.0</shedlock.version>
+        <quarkus.version>3.34.3</quarkus.version>
+        <shedlock.version>7.7.0</shedlock.version>
     </properties>
     <dependencyManagement>
         <dependencies>

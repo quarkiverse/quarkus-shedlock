@@ -15,7 +15,6 @@ import io.quarkiverse.shedlock.common.runtime.ShedLockConfiguration;
 import io.quarkus.arc.Arc;
 import io.quarkus.arc.SyntheticCreationalContext;
 import io.quarkus.mongodb.MongoClientName;
-import io.quarkus.mongodb.runtime.MongoClientBeanUtil;
 import io.quarkus.runtime.annotations.Recorder;
 import net.javacrumbs.shedlock.provider.mongo.MongoLockProvider;
 
@@ -23,15 +22,17 @@ import net.javacrumbs.shedlock.provider.mongo.MongoLockProvider;
 public class MongoSchedulerLockExecutorRecorder {
 
     public Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor> schedulerLockExecutorSupplier(
-            final ShedLockConfiguration shedLockConfiguration,
-            final MongoConfig mongoConfig,
             final String mongoClientName) {
         return new Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor>() {
             @Override
             public SchedulerLockExecutor apply(final SyntheticCreationalContext<SchedulerLockExecutor> context) {
+
+                MongoConfig mongoConfig = context.getInjectedReference(MongoConfig.class);
+
                 final MongoClient mongoClient = Arc.container()
                         .select(MongoClient.class,
-                                MongoClientBeanUtil.DEFAULT_MONGOCLIENT_NAME.equals(mongoClientName) ? new Default.Literal()
+                                io.quarkus.mongodb.runtime.MongoConfig.DEFAULT_CLIENT_NAME.equals(mongoClientName)
+                                        ? new Default.Literal()
                                         : new MongoClientName.Literal(mongoClientName))
                         .get();
                 final String databaseName = Optional.ofNullable(mongoConfig.mongoclients().get(mongoClientName))
@@ -39,7 +40,7 @@ public class MongoSchedulerLockExecutorRecorder {
                         .orElse(SchedulerLockInterceptorBase.SHED_LOCK);
                 final MongoDatabase database = mongoClient.getDatabase(databaseName);
                 return new SchedulerLockExecutor(
-                        shedLockConfiguration,
+                        context.getInjectedReference(ShedLockConfiguration.class),
                         context.getInjectedReference(InstantProvider.class),
                         new MongoLockProvider(database));
             }

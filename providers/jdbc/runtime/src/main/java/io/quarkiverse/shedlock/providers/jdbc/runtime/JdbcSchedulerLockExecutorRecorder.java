@@ -21,12 +21,13 @@ import net.javacrumbs.shedlock.provider.jdbc.JdbcLockProvider;
 public class JdbcSchedulerLockExecutorRecorder {
 
     public Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor> schedulerLockExecutorSupplier(
-            final ShedLockConfiguration shedLockConfiguration,
-            final JdbcConfig jdbcConfig,
             final String dataSourceName) {
         return new Function<SyntheticCreationalContext<SchedulerLockExecutor>, SchedulerLockExecutor>() {
             @Override
             public SchedulerLockExecutor apply(final SyntheticCreationalContext<SchedulerLockExecutor> context) {
+
+                JdbcConfig jdbcConfig = context.getInjectedReference(JdbcConfig.class);
+
                 final String tableName = Optional.ofNullable(jdbcConfig.dataSources().get(dataSourceName))
                         .map(JdbcConfig.DataSourceConfig::tableName)
                         .orElse(SchedulerLockInterceptorBase.SHED_LOCK);
@@ -36,7 +37,7 @@ public class JdbcSchedulerLockExecutorRecorder {
                                         : new DataSource.DataSourceLiteral(dataSourceName))
                         .get();
                 return new SchedulerLockExecutor(
-                        shedLockConfiguration,
+                        context.getInjectedReference(ShedLockConfiguration.class),
                         context.getInjectedReference(InstantProvider.class),
                         new JdbcLockProvider(agroalDataSource, tableName));
             }
