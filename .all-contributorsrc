@@ -24,6 +24,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "melloware",
+      "name": "Melloware",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4399574?v=4",
+      "profile": "https://melloware.com",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
