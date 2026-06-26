@@ -21,6 +21,11 @@
 # Overview
 ShedLock makes sure that your scheduled tasks are executed at most once at the same time. If a task is being executed on one node, it acquires a lock which prevents execution of the same task from another node (or thread). Please note, that if one task is already being executed on one node, execution on other nodes does not wait, it is simply skipped.
 
+## Documentation
+
+The documentation for this extension can be found [here](https://docs.quarkiverse.io/quarkus-shedlock/dev/index.html).
+
+
 
 ## Contributors ✨
 
